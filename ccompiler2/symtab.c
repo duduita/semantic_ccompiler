@@ -70,10 +70,10 @@ static BucketList hashTable[SIZE];
  * first time, otherwise ignored
  */
 
-void st_set_attribute(int level) // need finish (p1f)
-{
+// void st_set_attribute(int level) // need finish (p1f)
+// {
   
-}
+// }
 
 // Procedure st_remove removes lines in level K
 void st_remove(int level) // need finish (p1f)
