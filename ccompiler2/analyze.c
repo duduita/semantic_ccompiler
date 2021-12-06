@@ -12,18 +12,22 @@
 
 /* counter for variable memory locations */
 static int location = 0;
+static char *scope = "global";
 
 /* Procedure traverse is a generic recursive
  * syntax tree traversal routine:
  * it applies preProc in preorder and postProc
  * in postorder to tree pointed to by t
  */
+
 static void traverse(TreeNode *t,
                      void (*preProc)(TreeNode *),
                      void (*postProc)(TreeNode *))
 {
   if (t != NULL)
   {
+    if (t->stmtType == Function)
+      scope = t->attr.name;
     preProc(t);
     {
       int i;
@@ -31,6 +35,8 @@ static void traverse(TreeNode *t,
         traverse(t->child[i], preProc, postProc);
     }
     postProc(t);
+    if (t->stmtType == Function)
+      scope = t->attr.name;
     traverse(t->sibling, preProc, postProc);
   }
 }
@@ -61,11 +67,11 @@ static void insertNode(TreeNode *t)
     case AssignK:
       if (st_lookup(t->attr.name) == -1)
         /* not yet in table, so treat as new definition */
-        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, lineno, location++);
+        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, lineno, location++, scope);
       else
         /* already in table, so ignore location,
            add line number of use only */
-        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0);
+        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, scope);
       break;
     default:
       break;
@@ -77,11 +83,11 @@ static void insertNode(TreeNode *t)
     case IdK:
       if (st_lookup(t->attr.name) == -1)
         /* not yet in table, so treat as new definition */
-        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, location++);
+        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, location++, scope);
       else
         /* already in table, so ignore location,
            add line number of use only */
-        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0);
+        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, scope);
       break;
     default:
       break;

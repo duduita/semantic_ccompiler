@@ -69,7 +69,7 @@ static BucketList hashTable[SIZE];
  * loc = memory location is inserted only the
  * first time, otherwise ignored
  */
-void st_insert(char *name, ExpType type, StmtType stmtType, int val, int lineno, int loc)
+void st_insert(char *name, ExpType type, StmtType stmtType, int val, int lineno, int loc, char *scope)
 {
   int h = hash(name);
   BucketList l = hashTable[h];
@@ -80,9 +80,9 @@ void st_insert(char *name, ExpType type, StmtType stmtType, int val, int lineno,
     l = (BucketList)malloc(sizeof(struct BucketListRec));
     l->name = name;
     l->val = val;
-    l->scope = "global";
+    l->scope = scope;
     l->type = type;
-	l->stmtType = stmtType;
+    l->stmtType = stmtType;
 
     l->lines = (LineList)malloc(sizeof(struct LineListRec));
     l->lines->lineno = lineno;
@@ -135,16 +135,16 @@ void printSymTab(FILE *listing)
       {
         LineList t = l->lines;
         fprintf(listing, "%-21s ", l->name);
-		fprintf(listing, "%-16d ", l->stmtType);
+        fprintf(listing, "%-16d ", l->stmtType);
         fprintf(listing, "%-5d ", l->type);
         fprintf(listing, "%-9s ", l->scope);
         fprintf(listing, "%-8d ", 1000);
         fprintf(listing, "%-11d  ", l->memloc);
-        while (t != NULL)
-        {
-          fprintf(listing, "%3d ", t->lineno);
-          t = t->next;
-        }
+        // while (t != NULL)
+        // {
+        //   fprintf(listing, "%3d ", t->lineno);
+        //   t = t->next;
+        // }
         fprintf(listing, "\n");
         l = l->next;
       }
