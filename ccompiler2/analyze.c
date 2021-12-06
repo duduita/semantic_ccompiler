@@ -12,7 +12,7 @@
 
 /* counter for variable memory locations */
 static int location = 0;
-static char *scope = "global";
+static int level = 0;
 
 /* Procedure traverse is a generic recursive
  * syntax tree traversal routine:
@@ -26,8 +26,8 @@ static void traverse(TreeNode *t,
 {
   if (t != NULL)
   {
-    if (t->stmtType == Function)
-      scope = t->attr.name;
+    if (t->stmtType == Function || t->nodekind == WhileK) // paliativo (adicionar IfK bugado)
+      level++;
     preProc(t);
     {
       int i;
@@ -35,8 +35,8 @@ static void traverse(TreeNode *t,
         traverse(t->child[i], preProc, postProc);
     }
     postProc(t);
-    if (t->stmtType == Function)
-      scope = t->attr.name;
+    if (t->stmtType == Function || t->nodekind == WhileK)
+      level--;
     traverse(t->sibling, preProc, postProc);
   }
 }
@@ -67,11 +67,11 @@ static void insertNode(TreeNode *t)
     case AssignK:
       if (st_lookup(t->attr.name) == -1)
         /* not yet in table, so treat as new definition */
-        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, lineno, location++, scope);
+        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, lineno, location++, level);
       else
         /* already in table, so ignore location,
            add line number of use only */
-        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, scope);
+        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, level);
       break;
     default:
       break;
@@ -83,11 +83,11 @@ static void insertNode(TreeNode *t)
     case IdK:
       if (st_lookup(t->attr.name) == -1)
         /* not yet in table, so treat as new definition */
-        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, location++, scope);
+        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, location++, level);
       else
         /* already in table, so ignore location,
            add line number of use only */
-        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, scope);
+        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, level);
       break;
     default:
       break;

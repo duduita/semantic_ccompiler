@@ -56,7 +56,7 @@ typedef struct BucketListRec
   int val;
   ExpType type;
   StmtType stmtType;
-  char *scope;
+  int level;
   int memloc; /* memory location for variable */
   struct BucketListRec *next;
 } * BucketList;
@@ -69,7 +69,7 @@ static BucketList hashTable[SIZE];
  * loc = memory location is inserted only the
  * first time, otherwise ignored
  */
-void st_insert(char *name, ExpType type, StmtType stmtType, int val, int lineno, int loc, char *scope)
+void st_insert(char *name, ExpType type, StmtType stmtType, int val, int lineno, int loc, int level)
 {
   int h = hash(name);
   BucketList l = hashTable[h];
@@ -80,7 +80,7 @@ void st_insert(char *name, ExpType type, StmtType stmtType, int val, int lineno,
     l = (BucketList)malloc(sizeof(struct BucketListRec));
     l->name = name;
     l->val = val;
-    l->scope = scope;
+    l->level = level;
     l->type = type;
     l->stmtType = stmtType;
 
@@ -137,7 +137,7 @@ void printSymTab(FILE *listing)
         fprintf(listing, "%-21s ", l->name);
         fprintf(listing, "%-16d ", l->stmtType);
         fprintf(listing, "%-5d ", l->type);
-        fprintf(listing, "%-9s ", l->scope);
+        fprintf(listing, "%-9d ", l->level);
         fprintf(listing, "%-8d ", 1000);
         fprintf(listing, "%-11d  ", l->memloc);
         // while (t != NULL)
