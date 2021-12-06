@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "__stddef_max_align_t.h": "c",
+        "analyze.h": "c"
+    }
+}

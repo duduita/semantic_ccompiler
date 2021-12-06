@@ -12,7 +12,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "symtab.h"
-#include "globals.h"
 
 /* SIZE is the size of the hash table */
 #define SIZE 211
@@ -53,9 +52,6 @@ typedef struct BucketListRec
 {
   char *name;
   LineList lines;
-  int val;
-  ExpType type;
-  char *scope;
   int memloc; /* memory location for variable */
   struct BucketListRec *next;
 } * BucketList;
@@ -68,7 +64,7 @@ static BucketList hashTable[SIZE];
  * loc = memory location is inserted only the
  * first time, otherwise ignored
  */
-void st_insert(char *name, ExpType type, int val, int lineno, int loc)
+void st_insert(char *name, int lineno, int loc)
 {
   int h = hash(name);
   BucketList l = hashTable[h];
@@ -78,11 +74,6 @@ void st_insert(char *name, ExpType type, int val, int lineno, int loc)
   {
     l = (BucketList)malloc(sizeof(struct BucketListRec));
     l->name = name;
-    l->val = val;
-    l->scope = "global";
-    l->type = type;
-    l->name = name;
-
     l->lines = (LineList)malloc(sizeof(struct LineListRec));
     l->lines->lineno = lineno;
     l->memloc = loc;
@@ -123,8 +114,8 @@ int st_lookup(char *name)
 void printSymTab(FILE *listing)
 {
   int i;
-  fprintf(listing, "Variable Name (ID)   Type    Scope         Value       Location     Line Numbers\n");
-  fprintf(listing, "------------------   -----  --------     ----------    --------   -------------\n");
+  fprintf(listing, "Variable Name  Location   Line Numbers\n");
+  fprintf(listing, "-------------  --------   ------------\n");
   for (i = 0; i < SIZE; ++i)
   {
     if (hashTable[i] != NULL)
@@ -133,11 +124,8 @@ void printSymTab(FILE *listing)
       while (l != NULL)
       {
         LineList t = l->lines;
-        fprintf(listing, "%-24s ", l->name);
-        fprintf(listing, "%-4d ", l->type);
-        fprintf(listing, "%-10s ", l->scope);
-        fprintf(listing, "%-8d ", l->val);
-        fprintf(listing, "%10d  ", l->memloc);
+        fprintf(listing, "%-14s ", l->name);
+        fprintf(listing, "%-8d  ", l->memloc);
         while (t != NULL)
         {
           fprintf(listing, "%4d ", t->lineno);
