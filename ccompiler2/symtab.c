@@ -154,6 +154,26 @@ int st_lookup(char *name)
 		return l->memloc;
 }
 
+int st_declared(char *name, int level)
+{
+	int h = hash(name);
+	BucketList l = hashTable[h];
+	while ((l != NULL) && (strcmp(name, l->name) != 0))
+		l = l->next;
+	if (l == NULL || l->level != level)
+		return 0;
+	return 1;
+}
+
+BucketList st_search(char *name)
+{
+	int h = hash(name);
+	BucketList l = hashTable[h];
+	while ((l != NULL) && (strcmp(name, l->name) != 0))
+		l = l->next;
+	return l;
+}
+
 /* Procedure printSymTab prints a formatted
  * listing of the symbol table contents
  * to the listing file
