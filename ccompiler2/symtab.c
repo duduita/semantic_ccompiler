@@ -55,6 +55,7 @@ typedef struct BucketListRec
   LineList lines;
   int val;
   ExpType type;
+  StmtType stmtType;
   char *scope;
   int memloc; /* memory location for variable */
   struct BucketListRec *next;
@@ -68,7 +69,7 @@ static BucketList hashTable[SIZE];
  * loc = memory location is inserted only the
  * first time, otherwise ignored
  */
-void st_insert(char *name, ExpType type, int val, int lineno, int loc)
+void st_insert(char *name, ExpType type, StmtType stmtType, int val, int lineno, int loc)
 {
   int h = hash(name);
   BucketList l = hashTable[h];
@@ -81,6 +82,7 @@ void st_insert(char *name, ExpType type, int val, int lineno, int loc)
     l->val = val;
     l->scope = "global";
     l->type = type;
+	l->stmtType = stmtType;
 
     l->lines = (LineList)malloc(sizeof(struct LineListRec));
     l->lines->lineno = lineno;
@@ -122,8 +124,8 @@ int st_lookup(char *name)
 void printSymTab(FILE *listing)
 {
   int i;
-  fprintf(listing, "Variable Name (ID)   Type    Scope         Value       Location     Line Numbers\n");
-  fprintf(listing, "------------------   -----  --------     ----------    --------   -------------\n");
+  fprintf(listing, "Variable Name (ID)   Statement Type   Type    Scope         Value       Location     Line Numbers\n");
+  fprintf(listing, "------------------   --------------   -----  --------     ----------    --------   -------------\n");
   for (i = 0; i < SIZE; ++i)
   {
     if (hashTable[i] != NULL)
@@ -133,6 +135,7 @@ void printSymTab(FILE *listing)
       {
         LineList t = l->lines;
         fprintf(listing, "%-24s ", l->name);
+		fprintf(listing, "%-14d ", l->stmtType);
         fprintf(listing, "%-4d ", l->type);
         fprintf(listing, "%-10s ", l->scope);
         fprintf(listing, "%-8d ", l->val);

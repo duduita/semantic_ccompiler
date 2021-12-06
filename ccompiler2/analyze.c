@@ -61,11 +61,11 @@ static void insertNode(TreeNode *t)
     case AssignK:
       if (st_lookup(t->attr.name) == -1)
         /* not yet in table, so treat as new definition */
-        st_insert(t->attr.name, t->type, t->attr.val, lineno, location++);
+        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, lineno, location++);
       else
         /* already in table, so ignore location,
            add line number of use only */
-        st_insert(t->attr.name, t->type, t->attr.val, t->lineno, 0);
+        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0);
       break;
     default:
       break;
@@ -77,11 +77,11 @@ static void insertNode(TreeNode *t)
     case IdK:
       if (st_lookup(t->attr.name) == -1)
         /* not yet in table, so treat as new definition */
-        st_insert(t->attr.name, t->type, t->attr.val, t->lineno, location++);
+        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, location++);
       else
         /* already in table, so ignore location,
            add line number of use only */
-        st_insert(t->attr.name, t->type, t->attr.val, t->lineno, 0);
+        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0);
       break;
     default:
       break;
