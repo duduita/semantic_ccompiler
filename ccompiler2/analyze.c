@@ -26,7 +26,7 @@ static void traverse(TreeNode *t,
 {
   if (t != NULL)
   {
-    if (t->stmtType == Function || t->nodekind == WhileK) // paliativo (adicionar IfK bugado)
+    if (t->stmtType == Function || t->kind.stmt == WhileK || t->kind.stmt == IfK)
       level++;
     preProc(t);
     {
@@ -35,7 +35,7 @@ static void traverse(TreeNode *t,
         traverse(t->child[i], preProc, postProc);
     }
     postProc(t);
-    if (t->stmtType == Function || t->nodekind == WhileK)
+    if (t->stmtType == Function || t->kind.stmt == WhileK || t->kind.stmt == IfK)
       level--;
     traverse(t->sibling, preProc, postProc);
   }
