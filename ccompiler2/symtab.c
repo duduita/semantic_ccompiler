@@ -124,8 +124,8 @@ int st_lookup(char *name)
 void printSymTab(FILE *listing)
 {
   int i;
-  fprintf(listing, "Variable Name (ID)   Statement Type   Type    Scope         Value       Location     Line Numbers\n");
-  fprintf(listing, "------------------   --------------   -----  --------     ----------    --------   -------------\n");
+  fprintf(listing, "Variable Name (ID)   Statement Type   Type    Scope    Value   Location   Line Numbers\n");
+  fprintf(listing, "------------------   --------------   ----   -------   -----   --------   ------------\n");
   for (i = 0; i < SIZE; ++i)
   {
     if (hashTable[i] != NULL)
@@ -134,15 +134,15 @@ void printSymTab(FILE *listing)
       while (l != NULL)
       {
         LineList t = l->lines;
-        fprintf(listing, "%-24s ", l->name);
-		fprintf(listing, "%-14d ", l->stmtType);
-        fprintf(listing, "%-4d ", l->type);
-        fprintf(listing, "%-10s ", l->scope);
-        fprintf(listing, "%-8d ", l->val);
-        fprintf(listing, "%10d  ", l->memloc);
+        fprintf(listing, "%-21s ", l->name);
+		fprintf(listing, "%-16d ", l->stmtType);
+        fprintf(listing, "%-5d ", l->type);
+        fprintf(listing, "%-9s ", l->scope);
+        fprintf(listing, "%-8d ", 1000);
+        fprintf(listing, "%-11d  ", l->memloc);
         while (t != NULL)
         {
-          fprintf(listing, "%4d ", t->lineno);
+          fprintf(listing, "%3d ", t->lineno);
           t = t->next;
         }
         fprintf(listing, "\n");
