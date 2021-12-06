@@ -1,10 +1,12 @@
 int baitola;
 int gdc(int u, int v)
 {
+	int y;
 	if (v == 0)
 	{
 		int a;
-		while(1 == 1){
+		while (1 == 1)
+		{
 			int b;
 		}
 		return u;
@@ -15,10 +17,6 @@ int gdc(int u, int v)
 int pifao;
 void main(void)
 {
-	int x;
-	int y;
-	x = input();
-	y = input();
-	output(gdc(x, y));
+	y = 3;
 }
 int cu;

@@ -69,7 +69,6 @@ typedef enum
 } NodeKind;
 typedef enum
 {
-  piroca,
   IfK,
   AssignK,
   ReturnK,

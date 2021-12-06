@@ -26,8 +26,11 @@ static void traverse(TreeNode *t,
 {
   if (t != NULL)
   {
+    // printf("kindstmt: %d, level: %d\n", t->kind.stmt, level);
     if (t->stmtType == Function || t->kind.stmt == WhileK || t->kind.stmt == IfK)
+    {
       level++;
+    }
     preProc(t);
     {
       int i;
@@ -36,7 +39,10 @@ static void traverse(TreeNode *t,
     }
     postProc(t);
     if (t->stmtType == Function || t->kind.stmt == WhileK || t->kind.stmt == IfK)
+    {
+      // printf("%d\n", level);
       level--;
+    }
     traverse(t->sibling, preProc, postProc);
   }
 }

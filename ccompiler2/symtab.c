@@ -69,6 +69,41 @@ static BucketList hashTable[SIZE];
  * loc = memory location is inserted only the
  * first time, otherwise ignored
  */
+
+void st_set_attribute(int level) // need finish (p1f)
+{
+  
+}
+
+// Procedure st_remove removes lines in level K
+void st_remove(int level) // need finish (p1f)
+{
+  for (int i = 0; i < SIZE; i++)
+  {
+    if (hashTable[i] == NULL)
+      continue;
+
+    printf("%s\n", hashTable[i]->name);
+
+    BucketList prev;
+    prev = (BucketList)malloc(sizeof(struct BucketListRec));
+    prev->next = hashTable[i];
+    while (hashTable[i] != NULL)
+    {
+      if (hashTable[i]->level == level)
+      {
+        hashTable[i] = hashTable[i]->next;
+        prev->next = hashTable[i];
+      }
+      else
+      {
+        prev = hashTable[i];
+        hashTable[i] = hashTable[i]->next;
+      }
+    }
+  }
+}
+
 void st_insert(char *name, ExpType type, StmtType stmtType, int val, int lineno, int loc, int level)
 {
   int h = hash(name);

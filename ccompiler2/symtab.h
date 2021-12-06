@@ -18,6 +18,9 @@
  */
 void st_insert(char *name, ExpType type, StmtType stmtType, int val, int lineno, int loc, int level);
 
+// Procedure st_remove removes lines in level K
+void st_remove(int level);
+
 /* Function st_lookup returns the memory
  * location of a variable or -1 if not found
  */
