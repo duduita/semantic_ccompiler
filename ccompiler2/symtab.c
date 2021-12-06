@@ -83,17 +83,22 @@ void st_remove(int level) // need finish (p1f)
 		if (hashTable[i] == NULL)
 			continue;
 
-		printf("%s\n", hashTable[i]->name);
+		BucketList newHead = hashTable[i];
+		while (newHead && newHead->level == level)
+		{
+			newHead = newHead->next;
+		}
 
-		BucketList prev;
-		prev = (BucketList)malloc(sizeof(struct BucketListRec));
+		BucketList prev = (BucketList)malloc(sizeof(struct BucketListRec));
 		prev->next = hashTable[i];
 		while (hashTable[i] != NULL)
 		{
 			if (hashTable[i]->level == level)
 			{
+				BucketList aux = hashTable[i];
 				hashTable[i] = hashTable[i]->next;
 				prev->next = hashTable[i];
+				free(aux);
 			}
 			else
 			{
@@ -101,6 +106,8 @@ void st_remove(int level) // need finish (p1f)
 				hashTable[i] = hashTable[i]->next;
 			}
 		}
+
+		hashTable[i] = newHead;
 	}
 }
 
