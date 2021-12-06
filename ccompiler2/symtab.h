@@ -32,4 +32,7 @@ int st_lookup(char *name);
  */
 void printSymTab(FILE *listing);
 
+void st_set_attribute(char *name, int val);
+
+int st_declared(char *name, int level);
 #endif

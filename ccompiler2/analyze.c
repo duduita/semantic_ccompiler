@@ -70,15 +70,15 @@ static void insertNode(TreeNode *t)
   case StmtK:
     switch (t->kind.stmt)
     {
-    case AssignK:
-      if (st_lookup(t->attr.name) == -1)
-        /* not yet in table, so treat as new definition */
-        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, lineno, location++, level);
-      else
-        /* already in table, so ignore location,
-           add line number of use only */
-        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, level);
-      break;
+    // case AssignK:
+    //   if (st_lookup(t->attr.name) == -1)
+    //     /* not yet in table, so treat as new definition */
+    //     st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, lineno, location++, level);
+    //   else
+    //     /* already in table, so ignore location,
+    //        add line number of use only */
+    //     st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, level);
+    //   break;
     default:
       break;
     }
@@ -86,6 +86,9 @@ static void insertNode(TreeNode *t)
   case ExpK:
     switch (t->kind.exp)
     {
+    // case AssignK:
+    //   st_set_attribute(t->attr.name, level, t->lineno);
+    //   break;
     case IdK:
       if (st_lookup(t->attr.name) == -1)
         /* not yet in table, so treat as new definition */
@@ -94,6 +97,20 @@ static void insertNode(TreeNode *t)
         /* already in table, so ignore location,
            add line number of use only */
         st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, level);
+      break;
+    case OpK:
+      if (t->attr.op == ASSIGN)
+        if (st_lookup(t->child[0]->attr.name) == -1)
+          /* not yet in table, so treat as new definition */
+          printf("ERRO SEMÂNTICO: %s, LINHA: %d\n", t->child[0]->attr.name, t->child[0]->lineno);
+        else
+        {
+          if (level == 0 || st_declared(t->child[0]->attr.name, level))
+            st_set_attribute(t->child[0]->attr.name, t->child[1]->attr.val);
+        }
+      /* already in table, so ignore location,
+         add line number of use only */
+      // st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, level);
       break;
     default:
       break;

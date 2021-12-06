@@ -293,7 +293,7 @@ retorno_decl        : RETURN SEMI
                         }
                     ;
 
-// expressão → var = expressão | simples-expressão
+// expressão → var = expressão | simples-expressão 
 expressao           :  var ASSIGN expressao 
                         {
                           $$ = newExpNode(OpK); 

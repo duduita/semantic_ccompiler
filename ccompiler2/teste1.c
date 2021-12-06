@@ -17,6 +17,7 @@ int gdc(int u, int v)
 int pifao;
 void main(void)
 {
-	y = 3;
+	w = 3;
+	w = 1;
 }
 int cu;

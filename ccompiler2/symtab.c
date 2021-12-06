@@ -69,10 +69,13 @@ static BucketList hashTable[SIZE];
  * loc = memory location is inserted only the
  * first time, otherwise ignored
  */
-
-void st_set_attribute(int level) // need finish (p1f)
+int st_declared(char *name, int level)
 {
-  
+  printf("verify if %s is in %d level\n", name, level);
+}
+void st_set_attribute(char *name, int val)
+{
+  printf("set %d to %s\n", val, name);
 }
 
 // Procedure st_remove removes lines in level K
