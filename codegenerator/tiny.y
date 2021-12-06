@@ -90,7 +90,6 @@ var_declaracao      : tipo_especificador id
                           $$ = $1;
                           $$->child[0] = newExpNode(IdK);
                           $$->child[0]->attr.name = savedName;
-                          $$_>child[0]->type = savedType
                           $$->lineno = savedLineNo;
                         } SEMI
                     | tipo_especificador id
