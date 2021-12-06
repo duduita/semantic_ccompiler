@@ -81,7 +81,6 @@ void st_insert(char *name, ExpType type, int val, int lineno, int loc)
     l->val = val;
     l->scope = "global";
     l->type = type;
-    l->name = name;
 
     l->lines = (LineList)malloc(sizeof(struct LineListRec));
     l->lines->lineno = lineno;
