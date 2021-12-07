@@ -24,14 +24,14 @@
 /* the hash function */
 static int hash(char *key)
 {
-	int temp = 0;
-	int i = 0;
-	while (key[i] != '\0')
-	{
-		temp = ((temp << SHIFT) + key[i]) % SIZE;
-		++i;
-	}
-	return temp;
+  int temp = 0;
+  int i = 0;
+  while (key[i] != '\0')
+  {
+    temp = ((temp << SHIFT) + key[i]) % SIZE;
+    ++i;
+  }
+  return temp;
 }
 
 /* the list of line numbers of the source
@@ -39,8 +39,8 @@ static int hash(char *key)
  */
 typedef struct LineListRec
 {
-	int lineno;
-	struct LineListRec *next;
+  int lineno;
+  struct LineListRec *next;
 } * LineList;
 
 /* The record in the bucket lists for
@@ -51,14 +51,14 @@ typedef struct LineListRec
  */
 typedef struct BucketListRec
 {
-	char *name;
-	LineList lines;
-	int val;
-	ExpType type;
-	StmtType stmtType;
-	int level;
-	int memloc; /* memory location for variable */
-	struct BucketListRec *next;
+  char *name;
+  LineList lines;
+  int val;
+  ExpType type;
+  StmtType stmtType;
+  int level;
+  int memloc; /* memory location for variable */
+  struct BucketListRec *next;
 } * BucketList;
 
 /* the hash table */
@@ -69,82 +69,82 @@ static BucketList hashTable[SIZE];
  * loc = memory location is inserted only the
  * first time, otherwise ignored
  */
-int st_declared(char *name, int level)
-{
-  printf("verify if %s is in %d level\n", name, level);
-}
-void st_set_attribute(char *name, int val)
-{
-  printf("set %d to %s\n", val, name);
-}
+// int st_declared(char *name, int level)
+// {
+//   printf("verify if %s is in %d level\n", name, level);
+// }
+// void st_set_attribute(char *name, int val)
+// {
+//   printf("set %d to %s\n", val, name);
+// }
 
 // Procedure st_remove removes lines in level K
 void st_remove(int level)
 {
-	for (int i = 0; i < SIZE; i++)
-	{
-		if (hashTable[i] == NULL)
-			continue;
+  for (int i = 0; i < SIZE; i++)
+  {
+    if (hashTable[i] == NULL)
+      continue;
 
-		BucketList newHead = hashTable[i];
-		while (newHead && newHead->level == level)
-		{
-			newHead = newHead->next;
-		}
+    BucketList newHead = hashTable[i];
+    while (newHead && newHead->level == level)
+    {
+      newHead = newHead->next;
+    }
 
-		BucketList prev = (BucketList)malloc(sizeof(struct BucketListRec));
-		prev->next = hashTable[i];
-		while (hashTable[i] != NULL)
-		{
-			if (hashTable[i]->level == level)
-			{
-				BucketList aux = hashTable[i];
-				hashTable[i] = hashTable[i]->next;
-				prev->next = hashTable[i];
-				free(aux);
-			}
-			else
-			{
-				prev = hashTable[i];
-				hashTable[i] = hashTable[i]->next;
-			}
-		}
+    BucketList prev = (BucketList)malloc(sizeof(struct BucketListRec));
+    prev->next = hashTable[i];
+    while (hashTable[i] != NULL)
+    {
+      if (hashTable[i]->level == level)
+      {
+        BucketList aux = hashTable[i];
+        hashTable[i] = hashTable[i]->next;
+        prev->next = hashTable[i];
+        free(aux);
+      }
+      else
+      {
+        prev = hashTable[i];
+        hashTable[i] = hashTable[i]->next;
+      }
+    }
 
-		hashTable[i] = newHead;
-	}
+    hashTable[i] = newHead;
+  }
 }
 
 void st_insert(char *name, ExpType type, StmtType stmtType, int val, int lineno, int loc, int level)
 {
-	int h = hash(name);
-	BucketList l = hashTable[h];
-	while ((l != NULL) && (strcmp(name, l->name) != 0))
-		l = l->next;
-	if (l == NULL) /* variable not yet in table */
-	{
-		l = (BucketList)malloc(sizeof(struct BucketListRec));
-		l->name = name;
-		l->val = val;
-		l->level = level;
-		l->type = type;
-		l->stmtType = stmtType;
+  int h = hash(name);
+  BucketList l = hashTable[h];
+  while ((l != NULL) && (strcmp(name, l->name) != 0))
+    l = l->next;
+  if (l == NULL) /* variable not yet in table */
+  {
+    l = (BucketList)malloc(sizeof(struct BucketListRec));
+    l->name = name;
+    l->val = val;
+    l->level = level;
+    l->type = type;
+    l->stmtType = stmtType;
 
-		l->lines = (LineList)malloc(sizeof(struct LineListRec));
-		l->lines->lineno = lineno;
-		l->memloc = loc;
-		l->lines->next = NULL;
-		l->next = hashTable[h];
-		hashTable[h] = l;
-	}
-	else /* found in table, so just add line number */
-	{
-		LineList t = l->lines;
-		while (t->next != NULL)
-			t = t->next;
-		t->next = (LineList)malloc(sizeof(struct LineListRec));
-		t->next->lineno = lineno;
-		t->next->next = NULL;
-	}
+    l->lines = (LineList)malloc(sizeof(struct LineListRec));
+    l->lines->lineno = lineno;
+    l->memloc = loc;
+    l->lines->next = NULL;
+    l->next = hashTable[h];
+    hashTable[h] = l;
+  }
+  else /* found in table, so just add line number */
+  {
+    LineList t = l->lines;
+    while (t->next != NULL)
+      t = t->next;
+    t->next = (LineList)malloc(sizeof(struct LineListRec));
+    t->next->lineno = lineno;
+    t->next->next = NULL;
+  }
 } /* st_insert */
 
 /* Function st_lookup returns the memory
@@ -152,14 +152,35 @@ void st_insert(char *name, ExpType type, StmtType stmtType, int val, int lineno,
  */
 int st_lookup(char *name)
 {
-	int h = hash(name);
-	BucketList l = hashTable[h];
-	while ((l != NULL) && (strcmp(name, l->name) != 0))
-		l = l->next;
-	if (l == NULL)
-		return -1;
-	else
-		return l->memloc;
+  int h = hash(name);
+  BucketList l = hashTable[h];
+  while ((l != NULL) && (strcmp(name, l->name) != 0))
+    l = l->next;
+  if (l == NULL)
+    return -1;
+  else
+    return l->memloc;
+}
+
+int st_declared(char *name, int level)
+{
+  int h = hash(name);
+  BucketList l = hashTable[h];
+  while ((l != NULL) && (strcmp(name, l->name) != 0))
+    l = l->next;
+  // printf("l->level: %d   level: %d", l->level, level);
+  if (l == NULL || l->level != level)
+    return 0;
+  return 1;
+}
+
+BucketList st_search(char *name)
+{
+  int h = hash(name);
+  BucketList l = hashTable[h];
+  while ((l != NULL) && (strcmp(name, l->name) != 0))
+    l = l->next;
+  return l;
 }
 
 /* Procedure printSymTab prints a formatted
@@ -168,31 +189,31 @@ int st_lookup(char *name)
  */
 void printSymTab(FILE *listing)
 {
-	int i;
-	fprintf(listing, "Variable Name (ID)   Statement Type   Type    Scope    Value   Location   Line Numbers\n");
-	fprintf(listing, "------------------   --------------   ----   -------   -----   --------   ------------\n");
-	for (i = 0; i < SIZE; ++i)
-	{
-		if (hashTable[i] != NULL)
-		{
-			BucketList l = hashTable[i];
-			while (l != NULL)
-			{
-				LineList t = l->lines;
-				fprintf(listing, "%-21s ", l->name);
-				fprintf(listing, "%-16d ", l->stmtType);
-				fprintf(listing, "%-5d ", l->type);
-				fprintf(listing, "%-9d ", l->level);
-				fprintf(listing, "%-8d ", 1000);
-				fprintf(listing, "%-11d  ", l->memloc);
-				// while (t != NULL)
-				// {
-				//   fprintf(listing, "%3d ", t->lineno);
-				//   t = t->next;
-				// }
-				fprintf(listing, "\n");
-				l = l->next;
-			}
-		}
-	}
+  int i;
+  fprintf(listing, "Variable Name (ID)   Statement Type   Type    Scope    Value   Location   Line Numbers\n");
+  fprintf(listing, "------------------   --------------   ----   -------   -----   --------   ------------\n");
+  for (i = 0; i < SIZE; ++i)
+  {
+    if (hashTable[i] != NULL)
+    {
+      BucketList l = hashTable[i];
+      while (l != NULL)
+      {
+        LineList t = l->lines;
+        fprintf(listing, "%-21s ", l->name);
+        fprintf(listing, "%-16d ", l->stmtType);
+        fprintf(listing, "%-5d ", l->type);
+        fprintf(listing, "%-9d ", l->level);
+        fprintf(listing, "%-8d ", 1000);
+        fprintf(listing, "%-11d  ", l->memloc);
+        // while (t != NULL)
+        // {
+        //   fprintf(listing, "%3d ", t->lineno);
+        //   t = t->next;
+        // }
+        fprintf(listing, "\n");
+        l = l->next;
+      }
+    }
+  }
 } /* printSymTab */

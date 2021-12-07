@@ -26,8 +26,9 @@ static void traverse(TreeNode *t,
 {
   if (t != NULL)
   {
+    // printf("level: %d\n", level);
     // printf("kindstmt: %d, level: %d\n", t->kind.stmt, level);
-    if (t->stmtType == Function || t->kind.stmt == WhileK || t->kind.stmt == IfK)
+    if (t->stmtType == Comp_decl || t->kind.stmt == WhileK || t->kind.stmt == IfK)
     {
       level++;
     }
@@ -38,7 +39,7 @@ static void traverse(TreeNode *t,
         traverse(t->child[i], preProc, postProc);
     }
     postProc(t);
-    if (t->stmtType == Function || t->kind.stmt == WhileK || t->kind.stmt == IfK)
+    if (t->stmtType == Comp_decl || t->kind.stmt == WhileK || t->kind.stmt == IfK)
     {
       //   st_remove(level);
       level--;
@@ -105,19 +106,22 @@ static void insertNode(TreeNode *t)
           printf("ERRO SEMÂNTICO: %s, LINHA: %d\n", t->child[0]->attr.name, t->child[0]->lineno);
         else
         {
+          // printf("tipo filho[0]: %s, tipo filho[1]: %s\n", t->child[0]->attr.name, t->child[1]->attr.name);
+
           if (level == 0 || st_declared(t->child[0]->attr.name, level))
           {
+            // printf("tipo filho[0]: %d, tipo filho[1]: %d\n", t->child[0]->type, t->child[1]->type);
             // tipo do filho 0 = obtem_atributo(filho0, tipo);
             // tipo do filho 1 = obtem_atributo(filho1, tipo);
             // tipo do filho 0 = tipo do filho 1? se for, brazil, se nao for, tomou
-            if (st_get_attribute() )
+            if (t->child[0]->type == t->child[1]->type)
             {
-              printf("tipo filho[0]: %d, tipo filho[1]: %d\n", t->child[0]->type, t->child[1]->type);
-              st_set_attribute(t->child[0]->attr.name, t->child[1]->attr.val);
+              // printf("tipo filho[0]: %d, tipo filho[1]: %d\n", t->child[0]->type, t->child[1]->type);
+              // st_set_attributeKC(t->child[0]->attr.name, t->child[1]->attr.val);
             }
             else
             {
-              printf("tipo filho[0]: %d, tipo filho[1]: %d\n", t->child[0]->type, t->child[1]->type);
+              // printf("tipo filho[0]: %d, tipo filho[1]: %d\n", t->child[0]->type, t->child[1]->type);
               printf("ERRO SEMÂNTICO: %s, LINHA: %d\n", t->child[0]->attr.name, t->child[0]->lineno);
             }
           }

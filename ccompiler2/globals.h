@@ -93,7 +93,8 @@ typedef enum
 typedef enum
 {
   Variable,
-  Function
+  Function,
+  Comp_decl,
 } StmtType;
 
 #define MAXCHILDREN 3

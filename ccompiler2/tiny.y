@@ -18,6 +18,7 @@
 static int savedDec;
 static char * savedName; /* for use in assignments */
 static StmtType savedStmtType;
+static ExpType savedType;
 static int savedLineNo;  /* ditto */
 static TreeNode * savedTree; /* stores syntax tree for later return */
 static int yylex(void);
@@ -81,10 +82,12 @@ num                 : NUM
 tipo_especificador  : INT 
                         { 
                           $$ = newStmtNode(IntK);
+                          savedType = Integer;
                          }
                     | VOID
                         { 
                           $$ = newStmtNode(VoidK); 
+                          savedType = Void;
                         }
                     ;
                     
@@ -95,7 +98,7 @@ var_declaracao      : tipo_especificador id
                           $$ = $1;
                           $$->child[0] = newExpNode(IdK);
                           $$->child[0]->attr.name = savedName;
-                          $$->child[0]->type = $$->type;
+                          $$->child[0]->type = savedType;
                           $$->child[0]->stmtType = Variable;
                           $$->lineno = savedLineNo;
                         } SEMI
@@ -104,7 +107,7 @@ var_declaracao      : tipo_especificador id
                           $$ = $1;
                           $$->child[0] = newExpNode(IdK);
                           $$->child[0]->attr.name = savedName;
-                          $$->child[0]->type = $$->type;
+                          $$->child[0]->type = savedType;
                           $$->child[0]->stmtType = Variable;
                           $$->lineno = savedLineNo;
                         }
@@ -137,7 +140,7 @@ fun_declaracao      : tipo_especificador id
                           $$->lineno = savedLineNo;
                           $$->child[0] = newExpNode(IdK);
                           $$->child[0]->attr.name = savedName;
-                          $$->child[0]->type = $$->type;
+                          $$->child[0]->type = savedType;
                           $$->child[0]->stmtType = Function;
                         } 
                       LPAREN params RPAREN composto_decl
@@ -177,7 +180,7 @@ param               : tipo_especificador id
                           $$->lineno = savedLineNo;
                           $$->child[0] = newExpNode(IdK);
                           $$->child[0]->attr.name = savedName;
-                          $$->child[0]->type = $$->type;
+                          $$->child[0]->type = savedType;
                           $$->child[0]->stmtType = Variable;
                         }
                     | tipo_especificador id 
@@ -186,7 +189,7 @@ param               : tipo_especificador id
                           $$->lineno = savedLineNo;
                           $$->child[0] = newExpNode(IdK);
                           $$->child[0]->attr.name = savedName;
-                          $$->child[0]->type = $$->type;
+                          $$->child[0]->type = savedType;
                           $$->child[0]->stmtType = Variable;
                         }
                       LBRACK RBRACK  
@@ -196,6 +199,7 @@ param               : tipo_especificador id
 composto_decl       : LBRACES local_declaracoes statement_lista RBRACES
                         {
                           YYSTYPE t = $2;
+                          t->stmtType = Comp_decl;
                           if (t != NULL){ 
                             while (t->sibling != NULL)
                                 t = t->sibling;
@@ -296,7 +300,8 @@ expressao           :  var ASSIGN expressao
                         {
                           $$ = newExpNode(OpK); 
                           $$->attr.op = ASSIGN; 
-                          $$->child[0] = $1; 
+                          $$->child[0] = $1;
+                          $$->child[0]->type = savedType;
                           $$->child[1] = $3; 
                         }
                     |  simples_expressao
