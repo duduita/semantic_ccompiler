@@ -14,12 +14,7 @@
 #include "symtab.h"
 #include "globals.h"
 
-/* SIZE is the size of the hash table */
-#define SIZE 211
 
-/* SHIFT is the power of two used as multiplier
-   in hash function  */
-#define SHIFT 4
 
 /* the hash function */
 static int hash(char *key)
@@ -34,35 +29,6 @@ static int hash(char *key)
   return temp;
 }
 
-/* the list of line numbers of the source
- * code in which a variable is referenced
- */
-typedef struct LineListRec
-{
-  int lineno;
-  struct LineListRec *next;
-} * LineList;
-
-/* The record in the bucket lists for
- * each variable, including name,
- * assigned memory location, and
- * the list of line numbers in which
- * it appears in the source code
- */
-typedef struct BucketListRec
-{
-  char *name;
-  LineList lines;
-  int val;
-  ExpType type;
-  StmtType stmtType;
-  int level;
-  int memloc; /* memory location for variable */
-  struct BucketListRec *next;
-} * BucketList;
-
-/* the hash table */
-static BucketList hashTable[SIZE];
 
 /* Procedure st_insert inserts line numbers and
  * memory locations into the symbol table
@@ -190,8 +156,8 @@ BucketList st_search(char *name)
 void printSymTab(FILE *listing)
 {
   int i;
-  fprintf(listing, "Variable Name (ID)   Statement Type   Type    Scope    Value   Location   Line Numbers\n");
-  fprintf(listing, "------------------   --------------   ----   -------   -----   --------   ------------\n");
+  fprintf(listing, "Variable Name (ID)   Statement Type   Type    Scope\n");
+  fprintf(listing, "------------------   --------------   ----   -------\n");
   for (i = 0; i < SIZE; ++i)
   {
     if (hashTable[i] != NULL)
@@ -204,8 +170,6 @@ void printSymTab(FILE *listing)
         fprintf(listing, "%-16d ", l->stmtType);
         fprintf(listing, "%-5d ", l->type);
         fprintf(listing, "%-9d ", l->level);
-        fprintf(listing, "%-8d ", 1000);
-        fprintf(listing, "%-11d  ", l->memloc);
         // while (t != NULL)
         // {
         //   fprintf(listing, "%3d ", t->lineno);

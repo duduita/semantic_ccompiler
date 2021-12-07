@@ -1,8 +1,10 @@
-void pad(int w)
-{
-	int i;
+int funA(void){
+	int a;
 }
-void main(void)
-{
-	void a;
+int funB(void){
+	int b;
+}
+void main(void){
+	int a;
+	a = funC();
 }

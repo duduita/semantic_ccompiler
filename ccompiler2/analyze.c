@@ -41,7 +41,7 @@ static void traverse(TreeNode *t,
     postProc(t);
     if (t->stmtType == Comp_decl || t->kind.stmt == WhileK || t->kind.stmt == IfK)
     {
-        st_remove(level);
+      //   st_remove(level);
       level--;
     }
     traverse(t->sibling, preProc, postProc);
@@ -93,25 +93,36 @@ static void insertNode(TreeNode *t)
     case IdK:
       if (st_lookup(t->attr.name) == -1) /* not yet in table, so treat as new definition */
       {
-        // CASO 3: Declaração de variável tipo void
-        if (t->type == 0 && t->stmtType == 0)
-          printf("ERRO SEMÂNTICO: %s, LINHA: %d\n", t->attr.name, t->lineno);
-        else
-          st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, location++, level);
+        {
+          // CASO 3: Declaração de variável tipo void
+          if (t->type == 0 && t->stmtType == 0)
+            printf("ERRO SEMÂNTICO CASO 3: %s, LINHA: %d\n", t->attr.name, t->lineno);
+          else
+            st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, location++, level);
+        }
       }
       else
-        /* already in table, so ignore location,
-           add line number of use only */
-        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, level);
-      break;
+      {
+        // CASO 7: Declaração inválida! Nome já foi declarado como nome de função
+        BucketList l = st_search(t->attr.name);
+        if (l && l->stmtType == 1)
+          printf("ERRO SEMÂNTICO CASO 7: %s, LINHA: %d\n", t->attr.name, t->lineno);
+        else if (l)
+          printf("ERRO SEMÂNTICO CASO 4: %s, LINHA: %d\n", t->attr.name, t->lineno);
+        else
+          st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, level);
+        break;
+      }
+      /* already in table, so ignore location,
+         add line number of use only */
     case OpK:
       if (t->attr.op == ASSIGN)
       {
         // CASO 5: Chamada de função não declarada
-        if (t->child[1]->stmtType == Function && st_lookup(t->child[1]->attr.name) == -1)
-        {
-          printf("ERRO SEMÂNTICO [Chamada de função não declarada!]");
-        }
+        // if (t->child[1]->stmtType == Function)
+        // {
+        //   printf("ERRO SEMÂNTICO CASO 5 [Chamada de função não declarada!]\n");
+        // }
 
         if (st_lookup(t->child[0]->attr.name) == -1) /* not yet in table, so treat as new definition */
           printf("ERRO SEMÂNTICO: %s, LINHA: %d\n", t->child[0]->attr.name, t->child[0]->lineno);
@@ -157,6 +168,12 @@ static void insertNode(TreeNode *t)
 void buildSymtab(TreeNode *syntaxTree)
 {
   traverse(syntaxTree, insertNode, nullProc);
+  BucketList l = st_search("main");
+  if (l == NULL || (l == NULL && l->stmtType == 0))
+  {
+    // CASO 6: Função main() não declarada
+    printf("ERRO SEMÂNTICO CASO 6: Função main não declarado\n");
+  }
   if (TraceAnalyze)
   {
     fprintf(listing, "\nSymbol table:\n\n");
