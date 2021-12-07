@@ -41,7 +41,7 @@ static void traverse(TreeNode *t,
     postProc(t);
     if (t->stmtType == Comp_decl || t->kind.stmt == WhileK || t->kind.stmt == IfK)
     {
-      //   st_remove(level);
+      st_remove(level);
       level--;
     }
     traverse(t->sibling, preProc, postProc);
@@ -129,7 +129,7 @@ static void insertNode(TreeNode *t)
           BucketList l = st_search(t->child[1]->attr.name);
           if (l == NULL)
           {
-          printf("ERRO SEMÂNTICO CASO 5: %s, LINHA: %d\n", t->child[1]->attr.name, t->child[1]->lineno);
+            printf("ERRO SEMÂNTICO CASO 5: %s, LINHA: %d\n", t->child[1]->attr.name, t->child[1]->lineno);
           }
         }
 
@@ -180,7 +180,7 @@ void buildSymtab(TreeNode *syntaxTree)
 {
   traverse(syntaxTree, insertNode, nullProc);
   BucketList l = st_search("main");
-  if (l == NULL || (l == NULL && l->stmtType == 0))
+  if (l == NULL || (l != NULL && l->stmtType == 0))
   {
     // CASO 6: Função main() não declarada
     printf("ERRO SEMÂNTICO CASO 6: Função main não declarado\n");

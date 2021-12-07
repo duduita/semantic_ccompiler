@@ -1,11 +1,11 @@
-void example(void)
+int example(void)
 {
-	int b;
-	return 5;
+	int c;
+	return 1;
 }
 
 void pad(int w)
 {
-	int a;
-	a = fun();
+	int main;
 }
+
