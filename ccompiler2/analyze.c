@@ -118,14 +118,23 @@ static void insertNode(TreeNode *t)
     case OpK:
       if (t->attr.op == ASSIGN)
       {
+        // a = fun();
+        //   =
+        // 0   1
+        // a   fun()
+        //      2
         // CASO 5: Chamada de função não declarada
-        // if (t->child[1]->stmtType == Function)
-        // {
-        //   printf("ERRO SEMÂNTICO CASO 5 [Chamada de função não declarada!]\n");
-        // }
+        if (t->child[1]->type != Integer)
+        {
+          BucketList l = st_search(t->child[1]->attr.name);
+          if (l == NULL)
+          {
+            printf("ERRO SEMÂNTICO CASO 5 [Chamada de função não declarada!]\n");
+          }
+        }
 
         if (st_lookup(t->child[0]->attr.name) == -1) /* not yet in table, so treat as new definition */
-          printf("ERRO SEMÂNTICO: %s, LINHA: %d\n", t->child[0]->attr.name, t->child[0]->lineno);
+          printf("ERRO SEMÂNTICO CASO 1: %s, LINHA: %d\n", t->child[0]->attr.name, t->child[0]->lineno);
         else
         {
           // printf("tipo filho[0]: %s, tipo filho[1]: %s\n", t->child[0]->attr.name, t->child[1]->attr.name);
@@ -140,11 +149,13 @@ static void insertNode(TreeNode *t)
             {
               // printf("tipo filho[0]: %d, tipo filho[1]: %d\n", t->child[0]->type, t->child[1]->type);
               // st_set_attributeKC(t->child[0]->attr.name, t->child[1]->attr.val);
+              BucketList p = st_search(t->child[0]->attr.name);
+              p->val = t->child[1]->attr.val;
             }
             else
             {
               // printf("tipo filho[0]: %d, tipo filho[1]: %d\n", t->child[0]->type, t->child[1]->type);
-              printf("ERRO SEMÂNTICO: %s, LINHA: %d\n", t->child[0]->attr.name, t->child[0]->lineno);
+              printf("ERRO SEMÂNTICO CASO 2: %s, LINHA: %d\n", t->child[0]->attr.name, t->child[0]->lineno);
             }
           }
         }

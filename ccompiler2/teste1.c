@@ -1,5 +1,10 @@
+void example(void)
+{
+	int b;
+}
+
 void pad(int w)
 {
-	int i;
 	int a;
+	a = 2;
 }
