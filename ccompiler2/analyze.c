@@ -81,6 +81,14 @@ static void insertNode(TreeNode *t)
 		//        add line number of use only */
 		//     st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, level);
 		//   break;
+		case IntK:
+		{
+
+			BucketList p = st_search(t->child[0]->attr.name);
+			if (p && p->stmtType != Function)
+				printf("ERRO SEMÂNTICO CASO 4: %s, LINHA: %d\n", t->attr.name, t->lineno);
+			break;
+		}
 		default:
 			break;
 		}
@@ -114,8 +122,6 @@ static void insertNode(TreeNode *t)
 				// printf("tipo de l (name '%s'): %d\n", l->name, l->stmtType);
 				if (t->type == Integer && l->stmtType == Function)
 					printf("ERRO SEMÂNTICO CASO 7: %s, LINHA: %d\n", t->attr.name, t->lineno);
-				else if (l->stmtType == Variable)
-					printf("ERRO SEMÂNTICO CASO 4: %s, LINHA: %d\n", t->attr.name, t->lineno);
 				// else
 				// 	st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, level);
 			}
