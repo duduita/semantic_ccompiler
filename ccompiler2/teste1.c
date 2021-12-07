@@ -15,9 +15,15 @@ int gdc(int u, int v)
 		return gdc(v, u - u / v * v);
 }
 int pifao;
+void coco(void)
+{
+	int c;
+}
 void main(void)
 {
-	w = 3;
+	int w;
 	w = 1;
 }
 int cu;
+int w;
+void werneckzao;
