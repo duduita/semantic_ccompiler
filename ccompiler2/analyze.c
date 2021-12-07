@@ -43,7 +43,7 @@ static void traverse(TreeNode *t,
 		if (t->composto == 1 || t->kind.stmt == WhileK || t->kind.stmt == IfK)
 		{
 			printf("removendo nível %d...\n", level);
-			st_remove(level);
+			// st_remove(level);
 			level--;
 		}
 	}

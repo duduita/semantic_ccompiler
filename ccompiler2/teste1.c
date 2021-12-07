@@ -1,6 +1,5 @@
-int exemplo(void)
+int main(void)
 {
 	int a;
 	a = 0;
-	b = a;
 }
