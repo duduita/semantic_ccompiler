@@ -42,7 +42,7 @@ static void traverse(TreeNode *t,
 		traverse(t->sibling, preProc, postProc);
 		if (t->composto == 1 || t->kind.stmt == WhileK || t->kind.stmt == IfK)
 		{
-			printf("removendo nível %d...\n", level);
+			// printf("removendo nível %d...\n", level);
 			// st_remove(level);
 			level--;
 		}
@@ -92,10 +92,10 @@ static void insertNode(TreeNode *t)
 		//   st_set_attribute(t->attr.name, level, t->lineno);
 		//   break;
 		case IdK:
-			printf("analisando nó %s\n", t->attr.name);
+			// printf("analisando nó %s\n", t->attr.name);
 			if (st_lookup(t->attr.name) == -1) /* not yet in table, so treat as new definition */
 			{
-				printf("nó %s não encontrado. Adicionando...\n", t->attr.name);
+				// printf("nó %s não encontrado. Adicionando...\n", t->attr.name);
 				{
 					// CASO 3: Declaração de variável tipo void
 					if (t->type == 0 && t->stmtType == 0)
@@ -103,15 +103,15 @@ static void insertNode(TreeNode *t)
 					else
 						st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, location++, level);
 				}
-				printf("adicionou?: %d\n", st_lookup(t->attr.name) != -1);
+				// printf("adicionou?: %d\n", st_lookup(t->attr.name) != -1);
 			}
 			else
 			{
 				printf("nó %s presente na tabela\n", t->attr.name);
 				// CASO 7: Declaração inválida! Nome já foi declarado como nome de função
 				BucketList l = st_search(t->attr.name);
-				printf("tipo de t (name '%s'): %d\n", t->attr.name, t->type);
-				printf("tipo de l (name '%s'): %d\n", l->name, l->stmtType);
+				// printf("tipo de t (name '%s'): %d\n", t->attr.name, t->type);
+				// printf("tipo de l (name '%s'): %d\n", l->name, l->stmtType);
 				if (t->type == Integer && l->stmtType == Function)
 					printf("ERRO SEMÂNTICO CASO 7: %s, LINHA: %d\n", t->attr.name, t->lineno);
 				else if (l->stmtType == Variable)
@@ -127,28 +127,29 @@ static void insertNode(TreeNode *t)
 			{
 				printf("operação de ASSIGN\n");
 				if (t->child[0])
-					printf("filho esquerdo encontrado: %s\n", t->child[0]->attr.name);
-				if (t->child[1])
-				{
-					printf("filho direito encontrado: %d\n", t->child[1]->attr.val);
-				}
-				if (t->child[0] && t->child[1])
-					printf("%s + %d\n", t->child[0]->attr.name, t->child[1]->attr.val);
-				printf("nao encontrou?: %d\n", st_lookup(t->child[0]->attr.name) == -1);
-				// a = fun();
-				//   =
-				// 0   1
-				// a   fun()
-				//      2
-				// CASO 5: Chamada de função não declarada
-				if (t->child[1]->type != Integer)
-				{
-					BucketList l = st_search(t->child[1]->attr.name);
-					if (l == NULL)
+					// printf("filho esquerdo encontrado: %s\n", t->child[0]->attr.name);
+					if (t->child[1])
 					{
-						printf("ERRO SEMÂNTICO CASO 5: %s, LINHA: %d\n", t->child[1]->attr.name, t->child[1]->lineno);
+						// printf("filho direito encontrado: %d\n", t->child[1]->attr.val);
 					}
-				}
+				if (t->child[0] && t->child[1])
+					// printf("%s + %d\n", t->child[0]->attr.name, t->child[1]->attr.val);
+					// printf("nao encontrou?: %d\n", st_lookup(t->child[0]->attr.name) == -1);
+					// a = fun();
+					//   =
+					// 0   1
+					// a   fun()
+					//      2
+					// CASO 5: Chamada de função não declarada
+					if (t->child[1]->type != Integer)
+					{
+						BucketList l = st_search(t->child[1]->attr.name);
+						if (l == NULL)
+						{
+
+							printf("ERRO SEMÂNTICO CASO 5: %s, LINHA: %d\n", t->child[1]->attr.name, t->child[1]->lineno);
+						}
+					}
 
 				if (st_lookup(t->child[0]->attr.name) == -1) /* not yet in table, so treat as new definition */
 					printf("ERRO SEMÂNTICO CASO 1: %s, LINHA: %d\n", t->child[0]->attr.name, t->child[0]->lineno);

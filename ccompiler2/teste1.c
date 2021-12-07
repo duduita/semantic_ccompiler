@@ -1,9 +1,15 @@
 void main(void)
 {
 	int a;
-	a = 0;
-	while (a == 1)
+	a = 1;
+	if (1 == 1)
 	{
-		a = 2;
+		int b;
+		b = 2;
+		if (1 == 1)
+		{
+			int c;
+			c = b*b;
+		}
 	}
 }
