@@ -70,8 +70,47 @@ static void genStmt(TreeNode *tree)
 		}
 		break;
 	case IfK:
-		printf("if nao implementado\n");
-		break;
+		if (TraceCode)
+			emitComment("-> if");
+		p1 = tree->child[0];
+		p2 = tree->child[1];
+		p3 = tree->child[2];
+		/* generate code for test expression */
+		cGen(p1);
+		savedLoc1 = emitSkip(1);
+		emitComment("if: jump to else belongs here");
+		/* recurse on then part */
+		cGen(p2);
+		savedLoc2 = emitSkip(1);
+		emitComment("if: jump to end belongs here");
+		currentLoc = emitSkip(0);
+		emitBackup(savedLoc1);
+		emitRM_Abs("JEQ", ac, currentLoc, "if: jmp to else");
+		emitRestore();
+		/* recurse on else part */
+		cGen(p3);
+		currentLoc = emitSkip(0);
+		emitBackup(savedLoc2);
+		emitRM_Abs("LDA", pc, currentLoc, "jmp to end");
+		emitRestore();
+		if (TraceCode)
+			emitComment("<- if");
+		break; /* if_k */
+	case WhileK:
+		if (TraceCode)
+			emitComment("-> while");
+		p1 = tree->child[0];
+		p2 = tree->child[1];
+		savedLoc1 = emitSkip(0);
+		emitComment("while: jump after body comes back here");
+		/* generate code for body */
+		cGen(p1);
+		/* generate code for test */
+		cGen(p2);
+		emitRM_Abs("JEQ", ac, savedLoc1, "while: jmp back to body");
+		if (TraceCode)
+			emitComment("<- while");
+		break; /* repeat */
 	default:
 		printf("default stmt");
 	}
@@ -121,19 +160,19 @@ static void genStmt(TreeNode *tree)
 	//       emitComment("<- if");
 	//    break; /* if_k */
 
-	//    // case RepeatK:
-	//    //    if (TraceCode) emitComment("-> repeat") ;
-	//    //    p1 = tree->child[0] ;
-	//    //    p2 = tree->child[1] ;
-	//    //    savedLoc1 = emitSkip(0);
-	//    //    emitComment("repeat: jump after body comes back here");
-	//    //    /* generate code for body */
-	//    //    cGen(p1);
-	//    //    /* generate code for test */
-	//    //    cGen(p2);
-	//    //    emitRM_Abs("JEQ",ac,savedLoc1,"repeat: jmp back to body");
-	//    //    if (TraceCode)  emitComment("<- repeat") ;
-	//    //    break; /* repeat */
+	// case RepeatK:
+	//    if (TraceCode) emitComment("-> repeat") ;
+	//    p1 = tree->child[0] ;
+	//    p2 = tree->child[1] ;
+	//    savedLoc1 = emitSkip(0);
+	//    emitComment("repeat: jump after body comes back here");
+	//    /* generate code for body */
+	//    cGen(p1);
+	//    /* generate code for test */
+	//    cGen(p2);
+	//    emitRM_Abs("JEQ",ac,savedLoc1,"repeat: jmp back to body");
+	//    if (TraceCode)  emitComment("<- repeat") ;
+	//    break; /* repeat */
 
 	// case AssignK:
 	// 	printf("bosta");

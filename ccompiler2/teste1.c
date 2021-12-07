@@ -2,9 +2,8 @@ void main(void)
 {
 	int a;
 	a = 0;
-	if (a == 0)
+	while (a == 1)
 	{
-		int b;
-		b = 3;
+		a = 2;
 	}
 }
