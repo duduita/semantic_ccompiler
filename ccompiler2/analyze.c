@@ -110,7 +110,7 @@ static void insertNode(TreeNode *t)
             // tipo do filho 0 = obtem_atributo(filho0, tipo);
             // tipo do filho 1 = obtem_atributo(filho1, tipo);
             // tipo do filho 0 = tipo do filho 1? se for, brazil, se nao for, tomou
-            if (st_get_attribute())
+            if (st_get_attribute() )
             {
               printf("tipo filho[0]: %d, tipo filho[1]: %d\n", t->child[0]->type, t->child[1]->type);
               st_set_attribute(t->child[0]->attr.name, t->child[1]->attr.val);
