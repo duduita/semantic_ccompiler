@@ -36,19 +36,20 @@ static void genStmt(TreeNode *tree)
 			emitComment("-> IntK");
 		if (tree->child[0]->stmtType == Function)
 		{
-			printf("int func()\n");
+			printf("int %s()\n", tree->child[0]->attr.name);
 			loc = st_lookup(tree->child[0]->attr.name);
-			emitRM("LD", ac, loc, gp, "int func();");
+			emitRM(tree->child[0]->attr.name, ac, loc, gp, "int func();");
+			cGen(tree->child[0]->child[1]);
 			if (TraceCode)
-				emitComment("<- Id");
+				emitComment("<- FunK");
 		}
 		else
 		{
-			printf("int var\n");
+			printf("int %s\n", tree->child[0]->attr.name);
 			loc = st_lookup(tree->child[0]->attr.name);
 			emitRM("LD", ac, loc, gp, "int var;");
 			if (TraceCode)
-				emitComment("<- Id");
+				emitComment("<- IntK");
 		}
 		break; /* IntK */
 	case VoidK:
@@ -56,11 +57,12 @@ static void genStmt(TreeNode *tree)
 			emitComment("-> VoidK");
 		if (tree->child[0]->stmtType == Function)
 		{
-			printf("void func()\n");
+			printf("void %s()\n", tree->child[0]->attr.name);
 			loc = st_lookup(tree->child[0]->attr.name);
-			emitRM("LD", ac, loc, gp, "void func();");
+			emitRM(tree->child[0]->attr.name, ac, loc, gp, "void func();");
+			cGen(tree->child[0]->child[1]);
 			if (TraceCode)
-				emitComment("<- Id");
+				emitComment("<- FunK");
 		}
 		else
 		{
@@ -134,20 +136,20 @@ static void genStmt(TreeNode *tree)
 	//    //    break; /* repeat */
 
 	// case AssignK:
-	//    printf("bosta");
+	// 	printf("bosta");
 
-	//    if (TraceCode)
-	//       emitComment("-> assign");
-	//    printf("bosta");
+	// 	if (TraceCode)
+	// 		emitComment("-> assign");
+	// 	printf("bosta");
 
-	//    /* generate code for rhs */
-	//    cGen(tree->child[0]);
-	//    /* now store value */
-	//    loc = st_lookup(tree->attr.name);
-	//    emitRM("ST", ac, loc, gp, "assign: store value");
-	//    if (TraceCode)
-	//       emitComment("<- assign");
-	//    break; /* assign_k */
+	// 	/* generate code for rhs */
+	// 	cGen(tree->child[0]);
+	// 	/* now store value */
+	// 	loc = st_lookup(tree->attr.name);
+	// 	emitRM("ST", ac, loc, gp, "assign: store value");
+	// 	if (TraceCode)
+	// 		emitComment("<- assign");
+	// 	break; /* assign_k */
 
 	// // case ReadK:
 	// //    emitRO("IN",ac,0,0,"read integer value");
@@ -176,9 +178,8 @@ static void genExp(TreeNode *tree)
 
 	switch (tree->kind.exp)
 	{
-
 	case ConstK:
-		printf("ConstK\n");
+		printf("ConstK %d\n", tree->attr.val);
 		if (TraceCode)
 			emitComment("-> Const");
 		/* gen code to load integer constant using LDC */
@@ -188,7 +189,7 @@ static void genExp(TreeNode *tree)
 		break; /* ConstK */
 
 	case IdK:
-		printf("Idk\n");
+		printf("Idk %s\n", tree->attr.name);
 
 		if (TraceCode)
 			emitComment("-> Id");
@@ -199,7 +200,23 @@ static void genExp(TreeNode *tree)
 		break; /* IdK */
 
 	case OpK:
-		printf("bosta");
+		printf("OpK\n");
+
+		if (tree->attr.op == ASSIGN)
+		{
+			if (TraceCode)
+				emitComment("-> assign");
+
+			printf("assign %s\n", tree->child[0]->attr.name);
+			/* generate code for rhs */
+			cGen(tree->child[1]);
+			/* now store value */
+			loc = st_lookup(tree->child[0]->attr.name);
+			emitRM("ST", ac, loc, gp, "assign: store value");
+			if (TraceCode)
+				emitComment("<- assign");
+			break;
+		}
 
 		if (TraceCode)
 			emitComment("-> Op");
@@ -217,15 +234,19 @@ static void genExp(TreeNode *tree)
 		{
 		case PLUS:
 			emitRO("ADD", ac, ac1, ac, "op +");
+			printf("+\n");
 			break;
 		case MINUS:
 			emitRO("SUB", ac, ac1, ac, "op -");
+			printf("-\n");
 			break;
 		case TIMES:
 			emitRO("MUL", ac, ac1, ac, "op *");
+			printf("*\n");
 			break;
 		case OVER:
 			emitRO("DIV", ac, ac1, ac, "op /");
+			printf("/\n");
 			break;
 		case LT:
 			emitRO("SUB", ac, ac1, ac, "op <");
@@ -233,6 +254,7 @@ static void genExp(TreeNode *tree)
 			emitRM("LDC", ac, 0, ac, "false case");
 			emitRM("LDA", pc, 1, pc, "unconditional jmp");
 			emitRM("LDC", ac, 1, ac, "true case");
+			printf("<\n");
 			break;
 		case EQ:
 			emitRO("SUB", ac, ac1, ac, "op ==");
@@ -240,6 +262,7 @@ static void genExp(TreeNode *tree)
 			emitRM("LDC", ac, 0, ac, "false case");
 			emitRM("LDA", pc, 1, pc, "unconditional jmp");
 			emitRM("LDC", ac, 1, ac, "true case");
+			printf("==\n");
 			break;
 		default:
 			emitComment("BUG: Unknown operator");
@@ -262,9 +285,6 @@ static void cGen(TreeNode *tree)
 {
 	if (tree != NULL)
 	{
-		printf("cgen nodekind: %d\n", tree->nodekind);
-		for (int i = 0; i < MAXCHILDREN; i++)
-			cGen(tree->child[i]);
 		switch (tree->nodekind)
 		{
 		case StmtK:
