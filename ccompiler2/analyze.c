@@ -129,7 +129,7 @@ static void insertNode(TreeNode *t)
           BucketList l = st_search(t->child[1]->attr.name);
           if (l == NULL)
           {
-            printf("ERRO SEMÂNTICO CASO 5 [Chamada de função não declarada!]\n");
+          printf("ERRO SEMÂNTICO CASO 5: %s, LINHA: %d\n", t->child[1]->attr.name, t->child[1]->lineno);
           }
         }
 
