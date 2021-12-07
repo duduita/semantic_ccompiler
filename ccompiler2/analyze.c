@@ -121,35 +121,30 @@ static void insertNode(TreeNode *t)
 			}
 			break;
 			/* already in table, so ignore location,
-         add line number of use only */
+		 add line number of use only */
 		case OpK:
 			if (t->attr.op == ASSIGN)
 			{
-				printf("operação de ASSIGN\n");
-				if (t->child[0])
-					// printf("filho esquerdo encontrado: %s\n", t->child[0]->attr.name);
-					if (t->child[1])
-					{
-						// printf("filho direito encontrado: %d\n", t->child[1]->attr.val);
-					}
-				if (t->child[0] && t->child[1])
-					// printf("%s + %d\n", t->child[0]->attr.name, t->child[1]->attr.val);
-					// printf("nao encontrou?: %d\n", st_lookup(t->child[0]->attr.name) == -1);
-					// a = fun();
-					//   =
-					// 0   1
-					// a   fun()
-					//      2
-					// CASO 5: Chamada de função não declarada
-					if (t->child[1]->type != Integer)
-					{
-						BucketList l = st_search(t->child[1]->attr.name);
-						if (l == NULL)
-						{
+				// printf("operação de ASSIGN\n");
+				// if (t->child[0])
+				// 	// printf("filho esquerdo encontrado: %s\n", t->child[0]->attr.name);
+				// 	if (t->child[1])
+				// 	{
+				// 		// printf("filho direito encontrado: %d\n", t->child[1]->attr.val);
+				// 	}
+				// if (t->child[0] && t->child[1])
+				// 	// printf("%s + %d\n", t->child[0]->attr.name, t->child[1]->attr.val);
+				// 	// printf("nao encontrou?: %d\n", st_lookup(t->child[0]->attr.name) == -1);
+				// 	// CASO 5: Chamada de função não declarada
+				// 	if (t->child[1]->type != Integer)
+				// 	{
+				// 		BucketList l = st_search(t->child[1]->attr.name);
+				// 		if (l == NULL)
+				// 		{
 
-							printf("ERRO SEMÂNTICO CASO 5: %s, LINHA: %d\n", t->child[1]->attr.name, t->child[1]->lineno);
-						}
-					}
+				// 			printf("ERRO SEMÂNTICO CASO 5: %s, LINHA: %d\n", t->child[1]->attr.name, t->child[1]->lineno);
+				// 		}
+				// 	}
 
 				if (st_lookup(t->child[0]->attr.name) == -1) /* not yet in table, so treat as new definition */
 					printf("ERRO SEMÂNTICO CASO 1: %s, LINHA: %d\n", t->child[0]->attr.name, t->child[0]->lineno);
@@ -179,7 +174,7 @@ static void insertNode(TreeNode *t)
 				}
 			}
 			/* already in table, so ignore location,
-         add line number of use only */
+		 add line number of use only */
 			// st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, level);
 			break;
 		default:
