@@ -21,31 +21,32 @@ static int level = 0;
  */
 
 static void traverse(TreeNode *t,
-                     void (*preProc)(TreeNode *),
-                     void (*postProc)(TreeNode *))
+					 void (*preProc)(TreeNode *),
+					 void (*postProc)(TreeNode *))
 {
-  if (t != NULL)
-  {
-    // printf("level: %d\n", level);
-    // printf("kindstmt: %d, level: %d\n", t->kind.stmt, level);
-    if (t->stmtType == Comp_decl || t->kind.stmt == WhileK || t->kind.stmt == IfK)
-    {
-      level++;
-    }
-    preProc(t);
-    {
-      int i;
-      for (i = 0; i < MAXCHILDREN; i++)
-        traverse(t->child[i], preProc, postProc);
-    }
-    postProc(t);
-    if (t->stmtType == Comp_decl || t->kind.stmt == WhileK || t->kind.stmt == IfK)
-    {
-      //   st_remove(level);
-      level--;
-    }
-    traverse(t->sibling, preProc, postProc);
-  }
+	if (t != NULL)
+	{
+		// printf("level: %d\n", level);
+		// printf("kindstmt: %d, level: %d\n", t->kind.stmt, level);
+		if (t->stmtType == Comp_decl || t->kind.stmt == WhileK || t->kind.stmt == IfK)
+		{
+			level++;
+		}
+		preProc(t);
+		{
+			int i;
+			for (i = 0; i < MAXCHILDREN; i++)
+				traverse(t->child[i], preProc, postProc);
+		}
+		postProc(t);
+		traverse(t->sibling, preProc, postProc);
+		if (t->stmtType == Comp_decl || t->kind.stmt == WhileK || t->kind.stmt == IfK)
+		{
+			printf("removendo nível %d...\n", level);
+			st_remove(level);
+			level--;
+		}
+	}
 }
 
 /* nullProc is a do-nothing procedure to
@@ -54,10 +55,10 @@ static void traverse(TreeNode *t,
  */
 static void nullProc(TreeNode *t)
 {
-  if (t == NULL)
-    return;
-  else
-    return;
+	if (t == NULL)
+		return;
+	else
+		return;
 }
 
 /* Procedure insertNode inserts
@@ -66,111 +67,127 @@ static void nullProc(TreeNode *t)
  */
 static void insertNode(TreeNode *t)
 {
-  switch (t->nodekind)
-  {
-  case StmtK:
-    switch (t->kind.stmt)
-    {
-    // case AssignK:
-    //   if (st_lookup(t->attr.name) == -1)
-    //     /* not yet in table, so treat as new definition */
-    //     st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, lineno, location++, level);
-    //   else
-    //     /* already in table, so ignore location,
-    //        add line number of use only */
-    //     st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, level);
-    //   break;
-    default:
-      break;
-    }
-    break;
-  case ExpK:
-    switch (t->kind.exp)
-    {
-    // case AssignK:
-    //   st_set_attribute(t->attr.name, level, t->lineno);
-    //   break;
-    case IdK:
-      if (st_lookup(t->attr.name) == -1) /* not yet in table, so treat as new definition */
-      {
-        {
-          // CASO 3: Declaração de variável tipo void
-          if (t->type == 0 && t->stmtType == 0)
-            printf("ERRO SEMÂNTICO CASO 3: %s, LINHA: %d\n", t->attr.name, t->lineno);
-          else
-            st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, location++, level);
-        }
-      }
-      else
-      {
-        // CASO 7: Declaração inválida! Nome já foi declarado como nome de função
-        BucketList l = st_search(t->attr.name);
-        if (l && l->stmtType == 1)
-          printf("ERRO SEMÂNTICO CASO 7: %s, LINHA: %d\n", t->attr.name, t->lineno);
-        else if (l)
-          printf("ERRO SEMÂNTICO CASO 4: %s, LINHA: %d\n", t->attr.name, t->lineno);
-        else
-          st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, level);
-        break;
-      }
-      /* already in table, so ignore location,
+	switch (t->nodekind)
+	{
+	case StmtK:
+		switch (t->kind.stmt)
+		{
+		// case AssignK:
+		//   if (st_lookup(t->attr.name) == -1)
+		//     /* not yet in table, so treat as new definition */
+		//     st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, lineno, location++, level);
+		//   else
+		//     /* already in table, so ignore location,
+		//        add line number of use only */
+		//     st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, level);
+		//   break;
+		default:
+			break;
+		}
+		break;
+	case ExpK:
+		switch (t->kind.exp)
+		{
+		// case AssignK:
+		//   st_set_attribute(t->attr.name, level, t->lineno);
+		//   break;
+		case IdK:
+			printf("analisando nó %s\n", t->attr.name);
+			if (st_lookup(t->attr.name) == -1) /* not yet in table, so treat as new definition */
+			{
+				printf("nó %s não encontrado. Adicionando...\n", t->attr.name);
+				{
+					// CASO 3: Declaração de variável tipo void
+					if (t->type == 0 && t->stmtType == 0)
+						printf("ERRO SEMÂNTICO CASO 3: %s, LINHA: %d\n", t->attr.name, t->lineno);
+					else
+						st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, location++, level);
+				}
+				printf("adicionou?: %d\n", st_lookup(t->attr.name) != -1);
+			}
+			else
+			{
+				printf("nó %s presente na tabela\n", t->attr.name);
+				// CASO 7: Declaração inválida! Nome já foi declarado como nome de função
+				BucketList l = st_search(t->attr.name);
+				printf("tipo de t (name '%s'): %d\n", t->attr.name, t->type);
+				printf("tipo de l (name '%s'): %d\n", l->name, l->stmtType);
+				if (t->type == Integer && l->stmtType == Function)
+					printf("ERRO SEMÂNTICO CASO 7: %s, LINHA: %d\n", t->attr.name, t->lineno);
+				else if (l->stmtType == Variable)
+					printf("ERRO SEMÂNTICO CASO 4: %s, LINHA: %d\n", t->attr.name, t->lineno);
+				// else
+				// 	st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, level);
+			}
+			break;
+			/* already in table, so ignore location,
          add line number of use only */
-    case OpK:
-      if (t->attr.op == ASSIGN)
-      {
-        // a = fun();
-        //   =
-        // 0   1
-        // a   fun()
-        //      2
-        // CASO 5: Chamada de função não declarada
-        if (t->child[1]->type != Integer)
-        {
-          BucketList l = st_search(t->child[1]->attr.name);
-          if (l == NULL)
-          {
-          printf("ERRO SEMÂNTICO CASO 5: %s, LINHA: %d\n", t->child[1]->attr.name, t->child[1]->lineno);
-          }
-        }
+		case OpK:
+			if (t->attr.op == ASSIGN)
+			{
+				printf("operação de ASSIGN\n");
+				if (t->child[0])
+					printf("filho esquerdo encontrado: %s\n", t->child[0]->attr.name);
+				if (t->child[1])
+				{
+					printf("filho direito encontrado: %d\n", t->child[1]->attr.val);
+				}
+				if (t->child[0] && t->child[1])
+					printf("%s + %d\n", t->child[0]->attr.name, t->child[1]->attr.val);
+				printf("nao encontrou?: %d\n", st_lookup(t->child[0]->attr.name) == -1);
+				// a = fun();
+				//   =
+				// 0   1
+				// a   fun()
+				//      2
+				// CASO 5: Chamada de função não declarada
+				if (t->child[1]->type != Integer)
+				{
+					BucketList l = st_search(t->child[1]->attr.name);
+					if (l == NULL)
+					{
+						printf("ERRO SEMÂNTICO CASO 5: %s, LINHA: %d\n", t->child[1]->attr.name, t->child[1]->lineno);
+					}
+				}
 
-        if (st_lookup(t->child[0]->attr.name) == -1) /* not yet in table, so treat as new definition */
-          printf("ERRO SEMÂNTICO CASO 1: %s, LINHA: %d\n", t->child[0]->attr.name, t->child[0]->lineno);
-        else
-        {
-          // printf("tipo filho[0]: %s, tipo filho[1]: %s\n", t->child[0]->attr.name, t->child[1]->attr.name);
+				if (st_lookup(t->child[0]->attr.name) == -1) /* not yet in table, so treat as new definition */
+					printf("ERRO SEMÂNTICO CASO 1: %s, LINHA: %d\n", t->child[0]->attr.name, t->child[0]->lineno);
+				else
+				{
+					// printf("tipo filho[0]: %s, tipo filho[1]: %s\n", t->child[0]->attr.name, t->child[1]->attr.name);
 
-          if (level == 0 || st_declared(t->child[0]->attr.name, level))
-          {
-            // printf("tipo filho[0]: %d, tipo filho[1]: %d\n", t->child[0]->type, t->child[1]->type);
-            // tipo do filho 0 = obtem_atributo(filho0, tipo);
-            // tipo do filho 1 = obtem_atributo(filho1, tipo);
-            // tipo do filho 0 = tipo do filho 1? se for, brazil, se nao for, tomou
-            if (t->child[0]->type == t->child[1]->type)
-            {
-              // printf("tipo filho[0]: %d, tipo filho[1]: %d\n", t->child[0]->type, t->child[1]->type);
-              // st_set_attributeKC(t->child[0]->attr.name, t->child[1]->attr.val);
-              BucketList p = st_search(t->child[0]->attr.name);
-              p->val = t->child[1]->attr.val;
-            }
-            else
-            {
-              // printf("tipo filho[0]: %d, tipo filho[1]: %d\n", t->child[0]->type, t->child[1]->type);
-              printf("ERRO SEMÂNTICO CASO 2: %s, LINHA: %d\n", t->child[0]->attr.name, t->child[0]->lineno);
-            }
-          }
-        }
-      }
-      /* already in table, so ignore location,
+					if (level == 0 || st_declared(t->child[0]->attr.name, level))
+					{
+						// printf("tipo filho[0]: %d, tipo filho[1]: %d\n", t->child[0]->type, t->child[1]->type);
+						// tipo do filho 0 = obtem_atributo(filho0, tipo);
+						// tipo do filho 1 = obtem_atributo(filho1, tipo);
+						// tipo do filho 0 = tipo do filho 1? se for, brazil, se nao for, tomou
+						if (t->child[0]->type == t->child[1]->type)
+						{
+							// printf("tipo filho[0]: %d, tipo filho[1]: %d\n", t->child[0]->type, t->child[1]->type);
+							// st_set_attributeKC(t->child[0]->attr.name, t->child[1]->attr.val);
+							BucketList p = st_search(t->child[0]->attr.name);
+							p->val = t->child[1]->attr.val;
+						}
+						else
+						{
+							// printf("tipo filho[0]: %d, tipo filho[1]: %d\n", t->child[0]->type, t->child[1]->type);
+							printf("ERRO SEMÂNTICO CASO 2: %s, LINHA: %d\n", t->child[0]->attr.name, t->child[0]->lineno);
+						}
+					}
+				}
+			}
+			/* already in table, so ignore location,
          add line number of use only */
-      // st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, level);
-      break;
-    default:
-      break;
-    }
-    break;
-  default:
-    break;
-  }
+			// st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, 0, level);
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 /* Function buildSymtab constructs the symbol
@@ -178,24 +195,24 @@ static void insertNode(TreeNode *t)
  */
 void buildSymtab(TreeNode *syntaxTree)
 {
-  traverse(syntaxTree, insertNode, nullProc);
-  BucketList l = st_search("main");
-  if (l == NULL || (l == NULL && l->stmtType == 0))
-  {
-    // CASO 6: Função main() não declarada
-    printf("ERRO SEMÂNTICO CASO 6: Função main não declarado\n");
-  }
-  if (TraceAnalyze)
-  {
-    fprintf(listing, "\nSymbol table:\n\n");
-    printSymTab(listing);
-  }
+	traverse(syntaxTree, insertNode, nullProc);
+	BucketList l = st_search("main");
+	if (l == NULL || (l == NULL && l->stmtType == 0))
+	{
+		// CASO 6: Função main() não declarada
+		printf("ERRO SEMÂNTICO CASO 6: Função main não declarado\n");
+	}
+	if (TraceAnalyze)
+	{
+		fprintf(listing, "\nSymbol table:\n\n");
+		printSymTab(listing);
+	}
 }
 
 static void typeError(TreeNode *t, char *message)
 {
-  fprintf(listing, "Type error at line %d: %s\n", t->lineno, message);
-  Error = TRUE;
+	fprintf(listing, "Type error at line %d: %s\n", t->lineno, message);
+	Error = TRUE;
 }
 
 /* Procedure checkNode performs
@@ -203,54 +220,54 @@ static void typeError(TreeNode *t, char *message)
  */
 static void checkNode(TreeNode *t)
 {
-  switch (t->nodekind)
-  {
-  case ExpK:
-    switch (t->kind.exp)
-    {
-    case OpK:
-      if ((t->child[0]->type != Integer) ||
-          (t->child[1]->type != Integer))
-        typeError(t, "Op applied to non-integer");
-      if ((t->attr.op == EQ) || (t->attr.op == LT))
-        t->type = Boolean;
-      else
-        t->type = Integer;
-      break;
-    case ConstK:
-    case IdK:
-      t->type = Integer;
-      break;
-    default:
-      break;
-    }
-    break;
-  case StmtK:
-    switch (t->kind.stmt)
-    {
-    case IfK:
-      if (t->child[0]->type == Integer)
-        typeError(t->child[0], "if test is not Boolean");
-      break;
-    case AssignK:
-      if (t->child[0]->type != Integer)
-        typeError(t->child[0], "assignment of non-integer value");
-      break;
-    // case WriteK:
-    //   if (t->child[0]->type != Integer)
-    //     typeError(t->child[0],"write of non-integer value");
-    //   break;
-    // case RepeatK:
-    //   if (t->child[1]->type == Integer)
-    //     typeError(t->child[1],"repeat test is not Boolean");
-    //   break;
-    default:
-      break;
-    }
-    break;
-  default:
-    break;
-  }
+	switch (t->nodekind)
+	{
+	case ExpK:
+		switch (t->kind.exp)
+		{
+		case OpK:
+			if ((t->child[0]->type != Integer) ||
+				(t->child[1]->type != Integer))
+				typeError(t, "Op applied to non-integer");
+			if ((t->attr.op == EQ) || (t->attr.op == LT))
+				t->type = Boolean;
+			else
+				t->type = Integer;
+			break;
+		case ConstK:
+		case IdK:
+			t->type = Integer;
+			break;
+		default:
+			break;
+		}
+		break;
+	case StmtK:
+		switch (t->kind.stmt)
+		{
+		case IfK:
+			if (t->child[0]->type == Integer)
+				typeError(t->child[0], "if test is not Boolean");
+			break;
+		case AssignK:
+			if (t->child[0]->type != Integer)
+				typeError(t->child[0], "assignment of non-integer value");
+			break;
+		// case WriteK:
+		//   if (t->child[0]->type != Integer)
+		//     typeError(t->child[0],"write of non-integer value");
+		//   break;
+		// case RepeatK:
+		//   if (t->child[1]->type == Integer)
+		//     typeError(t->child[1],"repeat test is not Boolean");
+		//   break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 /* Procedure typeCheck performs type checking
@@ -258,5 +275,5 @@ static void checkNode(TreeNode *t)
  */
 void typeCheck(TreeNode *syntaxTree)
 {
-  traverse(syntaxTree, nullProc, checkNode);
+	traverse(syntaxTree, nullProc, checkNode);
 }
