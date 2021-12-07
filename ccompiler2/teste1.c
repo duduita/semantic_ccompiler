@@ -4,7 +4,5 @@ void pad(int w)
 }
 void main(void)
 {
-	int a;
-	a = 0;
-	b = a;
+	void a;
 }

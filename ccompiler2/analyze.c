@@ -41,7 +41,7 @@ static void traverse(TreeNode *t,
     postProc(t);
     if (t->stmtType == Comp_decl || t->kind.stmt == WhileK || t->kind.stmt == IfK)
     {
-      //   st_remove(level);
+        st_remove(level);
       level--;
     }
     traverse(t->sibling, preProc, postProc);
@@ -91,9 +91,14 @@ static void insertNode(TreeNode *t)
     //   st_set_attribute(t->attr.name, level, t->lineno);
     //   break;
     case IdK:
-      if (st_lookup(t->attr.name) == -1)
-        /* not yet in table, so treat as new definition */
-        st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, location++, level);
+      if (st_lookup(t->attr.name) == -1) /* not yet in table, so treat as new definition */
+      {
+        // CASO 3: Declaração de variável tipo void
+        if (t->type == 0 && t->stmtType == 0)
+          printf("ERRO SEMÂNTICO: %s, LINHA: %d\n", t->attr.name, t->lineno);
+        else
+          st_insert(t->attr.name, t->type, t->stmtType, t->attr.val, t->lineno, location++, level);
+      }
       else
         /* already in table, so ignore location,
            add line number of use only */
@@ -102,6 +107,12 @@ static void insertNode(TreeNode *t)
     case OpK:
       if (t->attr.op == ASSIGN)
       {
+        // CASO 5: Chamada de função não declarada
+        if (t->child[1]->stmtType == Function && st_lookup(t->child[1]->attr.name) == -1)
+        {
+          printf("ERRO SEMÂNTICO [Chamada de função não declarada!]");
+        }
+
         if (st_lookup(t->child[0]->attr.name) == -1) /* not yet in table, so treat as new definition */
           printf("ERRO SEMÂNTICO: %s, LINHA: %d\n", t->child[0]->attr.name, t->child[0]->lineno);
         else

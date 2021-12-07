@@ -35,4 +35,7 @@ void printSymTab(FILE *listing);
 void st_set_attribute(char *name, int val);
 
 int st_declared(char *name, int level);
+
+// BucketList st_search(char *name);
+
 #endif
