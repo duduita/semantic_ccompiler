@@ -94,7 +94,6 @@ typedef enum
 {
   Variable,
   Function,
-  Comp_decl,
 } StmtType;
 
 #define MAXCHILDREN 3
@@ -104,6 +103,7 @@ typedef struct treeNode
   struct treeNode *child[MAXCHILDREN];
   struct treeNode *sibling;
   int lineno;
+  int composto;
   NodeKind nodekind;
   union
   {

@@ -1,19 +1,6 @@
-<<<<<<< HEAD
-void main(void)
+int exemplo(void)
 {
-	int b;
-	int b;
+	int a;
+	a = 0;
+	b = a;
 }
-=======
-int example(void)
-{
-	int c;
-	return 1;
-}
-
-void pad(int w)
-{
-	int main;
-}
-
->>>>>>> 5f907bba337a916a6887d18347e17f195407829c

@@ -116,6 +116,7 @@ TreeNode *newStmtNode(StmtKind kind)
 		t->nodekind = StmtK;
 		t->kind.stmt = kind;
 		t->lineno = lineno;
+		t->composto = 0;
 		if (kind == IntK)
 			t->type = Integer;
 		else
@@ -142,6 +143,7 @@ TreeNode *newExpNode(ExpKind kind)
 		t->kind.exp = kind;
 		t->lineno = lineno;
 		t->type = Void;
+		t->composto = 0;
 	}
 	return t;
 }

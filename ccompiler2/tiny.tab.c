@@ -570,12 +570,12 @@ static const yytype_int16 yyrline[] =
 {
        0,    39,    39,    44,    54,    59,    61,    63,    67,    74,
       82,    87,    97,    96,   106,   115,   121,   128,   105,   138,
-     137,   155,   157,   162,   172,   177,   187,   186,   199,   213,
+     137,   156,   158,   163,   173,   178,   188,   187,   200,   213,
      223,   227,   237,   241,   243,   245,   247,   249,   254,   256,
-     262,   268,   278,   287,   291,   299,   307,   312,   319,   325,
-     331,   318,   344,   352,   360,   368,   376,   384,   392,   397,
-     405,   413,   418,   425,   432,   437,   439,   441,   443,   449,
-     455,   454,   468,   470,   474,   484
+     262,   269,   280,   290,   294,   302,   310,   315,   322,   328,
+     334,   321,   347,   355,   363,   371,   379,   387,   395,   400,
+     408,   416,   421,   428,   435,   440,   442,   444,   446,   452,
+     458,   457,   471,   473,   477,   487
 };
 #endif
 
@@ -1381,38 +1381,39 @@ yyreduce:
                         {
                           yyval = yyvsp[-1];
                           yyval->lineno = savedLineNo;
+                          yyval->composto = 1;
                           yyval->child[0] = newExpNode(IdK);
                           yyval->child[0]->attr.name = savedName;
                           yyval->child[0]->type = savedType;
                           yyval->child[0]->stmtType = Function;
                         }
-#line 1390 "tiny.tab.c"
+#line 1391 "tiny.tab.c"
     break;
 
   case 20: /* fun_declaracao: tipo_especificador id @6 LPAREN params RPAREN composto_decl  */
-#line 147 "tiny.y"
+#line 148 "tiny.y"
                         {
                           yyval = yyvsp[-4];
                           yyval->child[0]->child[0] = yyvsp[-2];
                           yyval->child[0]->child[1] = yyvsp[0];
                         }
-#line 1400 "tiny.tab.c"
+#line 1401 "tiny.tab.c"
     break;
 
   case 21: /* params: param_lista  */
-#line 156 "tiny.y"
+#line 157 "tiny.y"
                         { yyval = yyvsp[0]; }
-#line 1406 "tiny.tab.c"
+#line 1407 "tiny.tab.c"
     break;
 
   case 22: /* params: VOID  */
-#line 158 "tiny.y"
+#line 159 "tiny.y"
                         { yyval = NULL; }
-#line 1412 "tiny.tab.c"
+#line 1413 "tiny.tab.c"
     break;
 
   case 23: /* param_lista: param_lista COMMA param  */
-#line 163 "tiny.y"
+#line 164 "tiny.y"
                         { 
                           YYSTYPE t = yyvsp[-2];
                           if (t != NULL){ 
@@ -1422,17 +1423,17 @@ yyreduce:
                             yyval = yyvsp[-2];
                           } else yyval = yyvsp[0];
                         }
-#line 1426 "tiny.tab.c"
+#line 1427 "tiny.tab.c"
     break;
 
   case 24: /* param_lista: param  */
-#line 173 "tiny.y"
+#line 174 "tiny.y"
                         { yyval = yyvsp[0]; }
-#line 1432 "tiny.tab.c"
+#line 1433 "tiny.tab.c"
     break;
 
   case 25: /* param: tipo_especificador id  */
-#line 178 "tiny.y"
+#line 179 "tiny.y"
                         {
                           yyval = yyvsp[-1];
                           yyval->lineno = savedLineNo;
@@ -1441,11 +1442,11 @@ yyreduce:
                           yyval->child[0]->type = savedType;
                           yyval->child[0]->stmtType = Variable;
                         }
-#line 1445 "tiny.tab.c"
+#line 1446 "tiny.tab.c"
     break;
 
   case 26: /* @7: %empty  */
-#line 187 "tiny.y"
+#line 188 "tiny.y"
                         {
                           yyval = yyvsp[-1];
                           yyval->lineno = savedLineNo;
@@ -1454,14 +1455,13 @@ yyreduce:
                           yyval->child[0]->type = savedType;
                           yyval->child[0]->stmtType = Variable;
                         }
-#line 1458 "tiny.tab.c"
+#line 1459 "tiny.tab.c"
     break;
 
   case 28: /* composto_decl: LBRACES local_declaracoes statement_lista RBRACES  */
-#line 200 "tiny.y"
+#line 201 "tiny.y"
                         {
                           YYSTYPE t = yyvsp[-2];
-                          t->stmtType = Comp_decl;
                           if (t != NULL){ 
                             while (t->sibling != NULL)
                                 t = t->sibling;
@@ -1558,52 +1558,55 @@ yyreduce:
 #line 263 "tiny.y"
                         { 
                           yyval = newStmtNode(IfK);
+                          yyval->composto = 1;
                           yyval->child[0] = yyvsp[-2];
                           yyval->child[1] = yyvsp[0];
                         }
-#line 1565 "tiny.tab.c"
+#line 1566 "tiny.tab.c"
     break;
 
   case 41: /* selecao_decl: IF LPAREN expressao RPAREN statement ELSE statement  */
-#line 269 "tiny.y"
+#line 270 "tiny.y"
                         { 
                           yyval = newStmtNode(IfK);
+                          yyval->composto = 1;
                           yyval->child[0] = yyvsp[-4];
                           yyval->child[1] = yyvsp[-2];
                           yyval->child[2] = yyvsp[0];
                         }
-#line 1576 "tiny.tab.c"
+#line 1578 "tiny.tab.c"
     break;
 
   case 42: /* iteracao_decl: WHILE LPAREN expressao RPAREN statement  */
-#line 279 "tiny.y"
+#line 281 "tiny.y"
                         {
                           yyval = newStmtNode(WhileK);
+                          yyval->composto = 1;
                           yyval->child[0] = yyvsp[-2];
                           yyval->child[1] = yyvsp[0];
                         }
-#line 1586 "tiny.tab.c"
+#line 1589 "tiny.tab.c"
     break;
 
   case 43: /* retorno_decl: RETURN SEMI  */
-#line 288 "tiny.y"
+#line 291 "tiny.y"
                         {        
                           yyval = newStmtNode(ReturnK);
                         }
-#line 1594 "tiny.tab.c"
+#line 1597 "tiny.tab.c"
     break;
 
   case 44: /* retorno_decl: RETURN expressao SEMI  */
-#line 292 "tiny.y"
+#line 295 "tiny.y"
                         {
                           yyval = newStmtNode(ReturnK);
                           yyval->child[0] = yyvsp[-1];
                         }
-#line 1603 "tiny.tab.c"
+#line 1606 "tiny.tab.c"
     break;
 
   case 45: /* expressao: var ASSIGN expressao  */
-#line 300 "tiny.y"
+#line 303 "tiny.y"
                         {
                           yyval = newExpNode(OpK); 
                           yyval->attr.op = ASSIGN; 
@@ -1611,66 +1614,66 @@ yyreduce:
                           yyval->child[0]->type = savedType;
                           yyval->child[1] = yyvsp[0]; 
                         }
-#line 1615 "tiny.tab.c"
+#line 1618 "tiny.tab.c"
     break;
 
   case 46: /* expressao: simples_expressao  */
-#line 308 "tiny.y"
+#line 311 "tiny.y"
                         { yyval = yyvsp[0]; }
-#line 1621 "tiny.tab.c"
+#line 1624 "tiny.tab.c"
     break;
 
   case 47: /* var: id  */
-#line 313 "tiny.y"
+#line 316 "tiny.y"
                         { 
                           yyval = newExpNode(IdK);
                           yyval->lineno = savedLineNo;
                           yyval->attr.name = savedName;
                         }
-#line 1631 "tiny.tab.c"
+#line 1634 "tiny.tab.c"
     break;
 
   case 48: /* @8: %empty  */
-#line 319 "tiny.y"
+#line 322 "tiny.y"
                         {
                           yyval = newExpNode(IdK);
                           yyval->lineno = savedLineNo;
                           yyval->attr.name = savedName;
                         }
-#line 1641 "tiny.tab.c"
+#line 1644 "tiny.tab.c"
     break;
 
   case 49: /* @9: %empty  */
-#line 325 "tiny.y"
+#line 328 "tiny.y"
                         {
                           yyval = yyvsp[-1];
                           yyval->child[0] = newExpNode(OpK);
                           yyval->child[0]->attr.op = LBRACK;
                         }
-#line 1651 "tiny.tab.c"
+#line 1654 "tiny.tab.c"
     break;
 
   case 50: /* @10: %empty  */
-#line 331 "tiny.y"
+#line 334 "tiny.y"
                         {
                           yyval = yyvsp[-3];
                           yyval->child[1] = yyvsp[0];
                         }
-#line 1660 "tiny.tab.c"
+#line 1663 "tiny.tab.c"
     break;
 
   case 51: /* var: id @8 LBRACK @9 expressao @10 RBRACK  */
-#line 336 "tiny.y"
+#line 339 "tiny.y"
                         {
                           yyval = yyvsp[-5];
                           yyval->child[2] = newExpNode(OpK);
                           yyval->child[2]->attr.op = RBRACK;
                         }
-#line 1670 "tiny.tab.c"
+#line 1673 "tiny.tab.c"
     break;
 
   case 52: /* simples_expressao: soma_expressao LT soma_expressao  */
-#line 345 "tiny.y"
+#line 348 "tiny.y"
                         {
                           yyval = newExpNode(OpK);
                           yyval->attr.op = LT;
@@ -1678,11 +1681,11 @@ yyreduce:
                           yyval->child[1] = yyvsp[0];
                           
                         }
-#line 1682 "tiny.tab.c"
+#line 1685 "tiny.tab.c"
     break;
 
   case 53: /* simples_expressao: soma_expressao LTE soma_expressao  */
-#line 353 "tiny.y"
+#line 356 "tiny.y"
                         {
                           yyval = newExpNode(OpK);
                           yyval->attr.op = LTE;
@@ -1690,11 +1693,11 @@ yyreduce:
                           yyval->child[1] = yyvsp[0];
                           
                         }
-#line 1694 "tiny.tab.c"
+#line 1697 "tiny.tab.c"
     break;
 
   case 54: /* simples_expressao: soma_expressao GT soma_expressao  */
-#line 361 "tiny.y"
+#line 364 "tiny.y"
                         {
                           yyval = newExpNode(OpK);
                           yyval->attr.op = GT;
@@ -1702,11 +1705,11 @@ yyreduce:
                           yyval->child[1] = yyvsp[0];
                           
                         }
-#line 1706 "tiny.tab.c"
+#line 1709 "tiny.tab.c"
     break;
 
   case 55: /* simples_expressao: soma_expressao GTE soma_expressao  */
-#line 369 "tiny.y"
+#line 372 "tiny.y"
                         {
                           yyval = newExpNode(OpK);
                           yyval->attr.op = GTE;    
@@ -1714,11 +1717,11 @@ yyreduce:
                           yyval->child[1] = yyvsp[0];
                           
                         }
-#line 1718 "tiny.tab.c"
+#line 1721 "tiny.tab.c"
     break;
 
   case 56: /* simples_expressao: soma_expressao EQ soma_expressao  */
-#line 377 "tiny.y"
+#line 380 "tiny.y"
                         {
                           yyval = newExpNode(OpK);
                           yyval->attr.op = EQ;  
@@ -1726,11 +1729,11 @@ yyreduce:
                           yyval->child[1] = yyvsp[0];
                           
                         }
-#line 1730 "tiny.tab.c"
+#line 1733 "tiny.tab.c"
     break;
 
   case 57: /* simples_expressao: soma_expressao DIFF soma_expressao  */
-#line 385 "tiny.y"
+#line 388 "tiny.y"
                         {
                           yyval = newExpNode(OpK);
                           yyval->attr.op = DIFF;  
@@ -1738,17 +1741,17 @@ yyreduce:
                           yyval->child[1] = yyvsp[0];
                           
                         }
-#line 1742 "tiny.tab.c"
+#line 1745 "tiny.tab.c"
     break;
 
   case 58: /* simples_expressao: soma_expressao  */
-#line 393 "tiny.y"
+#line 396 "tiny.y"
                         { yyval = yyvsp[0]; }
-#line 1748 "tiny.tab.c"
+#line 1751 "tiny.tab.c"
     break;
 
   case 59: /* soma_expressao: soma_expressao PLUS termo  */
-#line 398 "tiny.y"
+#line 401 "tiny.y"
                         {
                           yyval = newExpNode(OpK);
                           yyval->attr.op = PLUS;  
@@ -1756,11 +1759,11 @@ yyreduce:
                           yyval->child[1] = yyvsp[0];
                           
                         }
-#line 1760 "tiny.tab.c"
+#line 1763 "tiny.tab.c"
     break;
 
   case 60: /* soma_expressao: soma_expressao MINUS termo  */
-#line 406 "tiny.y"
+#line 409 "tiny.y"
                         {
                           yyval = newExpNode(OpK);
                           yyval->attr.op = MINUS; 
@@ -1768,110 +1771,110 @@ yyreduce:
                           yyval->child[1] = yyvsp[0];
                           
                         }
-#line 1772 "tiny.tab.c"
+#line 1775 "tiny.tab.c"
     break;
 
   case 61: /* soma_expressao: termo  */
-#line 414 "tiny.y"
+#line 417 "tiny.y"
                         { yyval = yyvsp[0]; }
-#line 1778 "tiny.tab.c"
+#line 1781 "tiny.tab.c"
     break;
 
   case 62: /* termo: termo TIMES fator  */
-#line 419 "tiny.y"
+#line 422 "tiny.y"
                         {
                           yyval = newExpNode(OpK);
                           yyval->attr.op = TIMES; 
                           yyval->child[0] = yyvsp[-2];
                           yyval->child[1] = yyvsp[0];
                         }
-#line 1789 "tiny.tab.c"
+#line 1792 "tiny.tab.c"
     break;
 
   case 63: /* termo: termo OVER fator  */
-#line 426 "tiny.y"
+#line 429 "tiny.y"
                         {
                           yyval = newExpNode(OpK);
                           yyval->attr.op = OVER; 
                           yyval->child[0] = yyvsp[-2];
                           yyval->child[1] = yyvsp[0];
                         }
-#line 1800 "tiny.tab.c"
+#line 1803 "tiny.tab.c"
     break;
 
   case 64: /* termo: fator  */
-#line 433 "tiny.y"
+#line 436 "tiny.y"
                         { yyval = yyvsp[0]; }
-#line 1806 "tiny.tab.c"
+#line 1809 "tiny.tab.c"
     break;
 
   case 65: /* fator: LPAREN expressao RPAREN  */
-#line 438 "tiny.y"
+#line 441 "tiny.y"
                         { yyval = yyvsp[-1]; }
-#line 1812 "tiny.tab.c"
+#line 1815 "tiny.tab.c"
     break;
 
   case 66: /* fator: var  */
-#line 440 "tiny.y"
+#line 443 "tiny.y"
                         { yyval = yyvsp[0]; }
-#line 1818 "tiny.tab.c"
+#line 1821 "tiny.tab.c"
     break;
 
   case 67: /* fator: ativacao  */
-#line 442 "tiny.y"
+#line 445 "tiny.y"
                         { yyval = yyvsp[0]; }
-#line 1824 "tiny.tab.c"
+#line 1827 "tiny.tab.c"
     break;
 
   case 68: /* fator: num  */
-#line 444 "tiny.y"
+#line 447 "tiny.y"
                         {
                           yyval = newExpNode(ConstK);
                           yyval->type = Integer;
                           yyval->attr.val = savedDec;
                         }
-#line 1834 "tiny.tab.c"
+#line 1837 "tiny.tab.c"
     break;
 
   case 69: /* fator: error  */
-#line 450 "tiny.y"
+#line 453 "tiny.y"
                         { yyval = NULL; }
-#line 1840 "tiny.tab.c"
+#line 1843 "tiny.tab.c"
     break;
 
   case 70: /* @11: %empty  */
-#line 455 "tiny.y"
+#line 458 "tiny.y"
                         {
                           yyval = newExpNode(IdK);
                           yyval->attr.name = savedName;
                           yyval->lineno = savedLineNo;
                         }
-#line 1850 "tiny.tab.c"
+#line 1853 "tiny.tab.c"
     break;
 
   case 71: /* ativacao: id @11 LPAREN args RPAREN  */
-#line 461 "tiny.y"
+#line 464 "tiny.y"
                         {
                           yyval = yyvsp[-3];
                           yyval->child[0] = yyvsp[-1];
                         }
-#line 1859 "tiny.tab.c"
+#line 1862 "tiny.tab.c"
     break;
 
   case 72: /* args: args_lista  */
-#line 469 "tiny.y"
+#line 472 "tiny.y"
                         { yyval = yyvsp[0]; }
-#line 1865 "tiny.tab.c"
+#line 1868 "tiny.tab.c"
     break;
 
   case 73: /* args: %empty  */
-#line 470 "tiny.y"
+#line 473 "tiny.y"
                       { yyval = NULL; }
-#line 1871 "tiny.tab.c"
+#line 1874 "tiny.tab.c"
     break;
 
   case 74: /* args_lista: args_lista COMMA expressao  */
-#line 475 "tiny.y"
+#line 478 "tiny.y"
                         { 
                           YYSTYPE t = yyvsp[-2];
                           if (t != NULL) { 
@@ -1881,17 +1884,17 @@ yyreduce:
                             yyval = yyvsp[-2];
                           } else yyval = yyvsp[0];
                         }
-#line 1885 "tiny.tab.c"
+#line 1888 "tiny.tab.c"
     break;
 
   case 75: /* args_lista: expressao  */
-#line 485 "tiny.y"
+#line 488 "tiny.y"
                         { yyval = yyvsp[0]; }
-#line 1891 "tiny.tab.c"
+#line 1894 "tiny.tab.c"
     break;
 
 
-#line 1895 "tiny.tab.c"
+#line 1898 "tiny.tab.c"
 
       default: break;
     }
@@ -2085,7 +2088,7 @@ yyreturn:
   return yyresult;
 }
 
-#line 489 "tiny.y"
+#line 492 "tiny.y"
 
 
 int yyerror(char * message)

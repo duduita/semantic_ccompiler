@@ -138,6 +138,7 @@ fun_declaracao      : tipo_especificador id
                         {
                           $$ = $1;
                           $$->lineno = savedLineNo;
+                          $$->composto = 1;
                           $$->child[0] = newExpNode(IdK);
                           $$->child[0]->attr.name = savedName;
                           $$->child[0]->type = savedType;
@@ -199,7 +200,6 @@ param               : tipo_especificador id
 composto_decl       : LBRACES local_declaracoes statement_lista RBRACES
                         {
                           YYSTYPE t = $2;
-                          t->stmtType = Comp_decl;
                           if (t != NULL){ 
                             while (t->sibling != NULL)
                                 t = t->sibling;
@@ -262,12 +262,14 @@ expressao_decl      : expressao SEMI
 selecao_decl        : IF LPAREN expressao RPAREN statement
                         { 
                           $$ = newStmtNode(IfK);
+                          $$->composto = 1;
                           $$->child[0] = $3;
                           $$->child[1] = $5;
                         }
                     | IF LPAREN expressao RPAREN statement ELSE statement
                         { 
                           $$ = newStmtNode(IfK);
+                          $$->composto = 1;
                           $$->child[0] = $3;
                           $$->child[1] = $5;
                           $$->child[2] = $7;
@@ -278,6 +280,7 @@ selecao_decl        : IF LPAREN expressao RPAREN statement
 iteracao_decl       : WHILE LPAREN expressao RPAREN statement
                         {
                           $$ = newStmtNode(WhileK);
+                          $$->composto = 1;
                           $$->child[0] = $3;
                           $$->child[1] = $5;
                         }

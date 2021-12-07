@@ -28,7 +28,7 @@ static void traverse(TreeNode *t,
 	{
 		// printf("level: %d\n", level);
 		// printf("kindstmt: %d, level: %d\n", t->kind.stmt, level);
-		if (t->stmtType == Comp_decl || t->kind.stmt == WhileK || t->kind.stmt == IfK)
+		if (t->composto == 1 || t->kind.stmt == WhileK || t->kind.stmt == IfK)
 		{
 			level++;
 		}
@@ -40,7 +40,7 @@ static void traverse(TreeNode *t,
 		}
 		postProc(t);
 		traverse(t->sibling, preProc, postProc);
-		if (t->stmtType == Comp_decl || t->kind.stmt == WhileK || t->kind.stmt == IfK)
+		if (t->composto == 1 || t->kind.stmt == WhileK || t->kind.stmt == IfK)
 		{
 			printf("removendo nível %d...\n", level);
 			st_remove(level);
