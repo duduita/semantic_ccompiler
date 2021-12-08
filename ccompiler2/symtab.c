@@ -29,20 +29,11 @@ static int hash(char *key)
   return temp;
 }
 
-
 /* Procedure st_insert inserts line numbers and
  * memory locations into the symbol table
  * loc = memory location is inserted only the
  * first time, otherwise ignored
  */
-// int st_declared(char *name, int level)
-// {
-//   printf("verify if %s is in %d level\n", name, level);
-// }
-// void st_set_attribute(char *name, int val)
-// {
-//   printf("set %d to %s\n", val, name);
-// }
 
 // Procedure st_remove removes lines in level K
 void st_remove(int level)
@@ -134,7 +125,6 @@ int st_declared(char *name, int level)
   BucketList l = hashTable[h];
   while ((l != NULL) && (strcmp(name, l->name) != 0))
     l = l->next;
-  // printf("l->level: %d   level: %d", l->level, level);
   if (l == NULL || l->level != level)
     return 0;
   return 1;
@@ -170,11 +160,6 @@ void printSymTab(FILE *listing)
         fprintf(listing, "%-16d ", l->stmtType);
         fprintf(listing, "%-5d ", l->type);
         fprintf(listing, "%-9d ", l->level);
-        // while (t != NULL)
-        // {
-        //   fprintf(listing, "%3d ", t->lineno);
-        //   t = t->next;
-        // }
         fprintf(listing, "\n");
         l = l->next;
       }

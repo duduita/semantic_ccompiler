@@ -64,10 +64,6 @@ static void genStmt(TreeNode *tree)
 			if (TraceCode)
 				emitComment("<- FunK");
 		}
-		else
-		{
-			// fooooodac
-		}
 		break;
 	case IfK:
 		if (TraceCode)
