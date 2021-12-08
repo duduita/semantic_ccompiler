@@ -1,15 +1,15 @@
+int gdc(int u, int v)
+{
+	if (v == 0)
+		return u;
+	else
+		return gdc(v, u - u / v * v);
+}
 void main(void)
 {
-	int a;
-	a = 1;
-	if (1 == 1)
-	{
-		int b;
-		b = 2;
-		if (1 == 1)
-		{
-			int c;
-			c = b*b;
-		}
-	}
+	int x;
+	int y;
+	x = input();
+	y = input();
+	output(gdc(x, y));
 }
