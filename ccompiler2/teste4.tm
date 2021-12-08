@@ -16,19 +16,11 @@
   5:     LD  0,3(5) 	int var;
 * <- IntK
 * -> assign
-* -> Op
 * -> Id
-  6:     LD  0,4(5) 	load id value
+  6:     LD  0,0(5) 	load id value
 * <- Id
-  7:     ST  0,0(6) 	op: push left
-* -> Const
-  8:    LDC  0,1(0) 	load const
-* <- Const
-  9:     LD  1,0(6) 	op: load left
- 10:    ADD  0,1,0 	op +
-* <- Op
- 11:     ST  0,4(5) 	assign: store value
+  7:     ST  0,3(5) 	assign: store value
 * <- assign
 * <- FunK
 * End of execution.
- 12:   HALT  0,0,0 	
+  8:   HALT  0,0,0 	

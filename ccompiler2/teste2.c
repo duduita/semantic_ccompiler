@@ -1,10 +1,13 @@
-int funA(void){
+int funA(void)
+{
 	int a;
 }
-int funB(void){
-	int b;
-}
-void main(void){
+void main(void)
+{
 	int a;
-	a = funC();
+	int a;
+	if (1 == 1)
+	{
+		int b;
+	}
 }

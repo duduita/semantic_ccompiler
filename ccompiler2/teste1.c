@@ -1,7 +1,8 @@
 /* ordenação por seleção */
 int x[10];
-int minloc(int a[], int low, int high)
+int minloc(int a[], int high)
 {
+	int low;
 	int i;
 	int x;
 	int k;

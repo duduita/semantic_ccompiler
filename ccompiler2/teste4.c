@@ -1,9 +1,6 @@
-void pad(void)
+int x[10];
+
+void main(int low, int high)
 {
-	int a;
-}
-void main(void)
-{
-	int b;
-	i = i + 1;
+	int a = x[0];
 }
