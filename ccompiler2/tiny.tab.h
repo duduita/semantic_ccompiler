@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.7.5.  */
+/* A Bison parser, made by GNU Bison 3.5.1.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -31,9 +31,8 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
-   especially those whose name start with YY_ or yy_.  They are
-   private implementation details that can be changed or removed.  */
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
 
 #ifndef YY_YY_TINY_TAB_H_INCLUDED
 # define YY_YY_TINY_TAB_H_INCLUDED
@@ -45,45 +44,40 @@
 extern int yydebug;
 #endif
 
-/* Token kinds.  */
+/* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    YYEMPTY = -2,
-    YYEOF = 0,                     /* "end of file"  */
-    YYerror = 256,                 /* error  */
-    YYUNDEF = 257,                 /* "invalid token"  */
-    IF = 258,                      /* IF  */
-    ELSE = 259,                    /* ELSE  */
-    ASSIGN = 260,                  /* ASSIGN  */
-    RETURN = 261,                  /* RETURN  */
-    WHILE = 262,                   /* WHILE  */
-    INT = 263,                     /* INT  */
-    VOID = 264,                    /* VOID  */
-    EQ = 265,                      /* EQ  */
-    LT = 266,                      /* LT  */
-    PLUS = 267,                    /* PLUS  */
-    LTE = 268,                     /* LTE  */
-    GT = 269,                      /* GT  */
-    GTE = 270,                     /* GTE  */
-    DIFF = 271,                    /* DIFF  */
-    MINUS = 272,                   /* MINUS  */
-    TIMES = 273,                   /* TIMES  */
-    OVER = 274,                    /* OVER  */
-    ID = 275,                      /* ID  */
-    NUM = 276,                     /* NUM  */
-    LPAREN = 277,                  /* LPAREN  */
-    RPAREN = 278,                  /* RPAREN  */
-    LBRACES = 279,                 /* LBRACES  */
-    RBRACES = 280,                 /* RBRACES  */
-    LBRACK = 281,                  /* LBRACK  */
-    RBRACK = 282,                  /* RBRACK  */
-    COMMA = 283,                   /* COMMA  */
-    SEMI = 284,                    /* SEMI  */
-    ERROR = 285                    /* ERROR  */
+    IF = 258,
+    ELSE = 259,
+    ASSIGN = 260,
+    RETURN = 261,
+    WHILE = 262,
+    INT = 263,
+    VOID = 264,
+    EQ = 265,
+    LT = 266,
+    PLUS = 267,
+    LTE = 268,
+    GT = 269,
+    GTE = 270,
+    DIFF = 271,
+    MINUS = 272,
+    TIMES = 273,
+    OVER = 274,
+    ID = 275,
+    NUM = 276,
+    LPAREN = 277,
+    RPAREN = 278,
+    LBRACES = 279,
+    RBRACES = 280,
+    LBRACK = 281,
+    RBRACK = 282,
+    COMMA = 283,
+    SEMI = 284,
+    ERROR = 285
   };
-  typedef enum yytokentype yytoken_kind_t;
 #endif
 
 /* Value type.  */
